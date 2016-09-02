@@ -1,5 +1,5 @@
 FROM php:5.6.23-apache
-MAINTAINER NutsProject, LLC <dev@nutsproject.co.jp>
+MAINTAINER NutsProject, LLC <dev@nutsllc.jp>
 
 RUN a2enmod rewrite expires
 
