@@ -6,10 +6,6 @@ This ``toybox-php`` image has been extended [the official PHP image](https://hub
 
 This image is registered to the [Docker Hub](https://hub.docker.com/r/nutsllc/toybox-php/) which is the official docker image registory.
 
-## Feature
-
-* gid/uid inside container correspond with outside container gid/uid by ``TOYBOX_GID`` or ``TOYBOX_UID`` environment valiable.
-
 ## Usage
 
 ### The simplest way to run
