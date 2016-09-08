@@ -1,4 +1,4 @@
-# PHP(5.6.x and 7.0.x) and Apache 2 on Docker
+# PHP(5.6.x and 7.0.x) with Apache 2 on Docker
 
 A Dockerfile for deploying a PHP using Docker container.
 
