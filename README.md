@@ -110,12 +110,42 @@ toybox-php:
 * zip
 * zlib
 
-### Zend Modules
+### PHP Zend Modules
 
 * Xdebug
 * Zend OPcache
 
+### Apache modules
 
+* core_module (static)
+* so_module (static)
+* watchdog_module (static)
+* http_module (static)
+* log_config_module (static)
+* logio_module (static)
+* version_module (static)
+* unixd_module (static)
+* access_compat_module (shared)
+* alias_module (shared)
+* auth_basic_module (shared)
+* authn_core_module (shared)
+* authn_file_module (shared)
+* authz_core_module (shared)
+* authz_host_module (shared)
+* authz_user_module (shared)
+* autoindex_module (shared)
+* deflate_module (shared)
+* dir_module (shared)
+* env_module (shared)
+* expires_module (shared)
+* filter_module (shared)
+* mime_module (shared)
+* mpm_prefork_module (shared)
+* negotiation_module (shared)
+* php5_module (shared)
+* rewrite_module (shared)
+* setenvif_module (shared)
+* status_module (shared)
 
 ## Contributing
 
