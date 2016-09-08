@@ -11,7 +11,7 @@ This image is registered to the [Docker Hub](https://hub.docker.com/r/nutsllc/to
 ### The simplest way to run
 ``docker run -it -p 8080:80 -d nutsllc/toybox-php``
 
-### To correspond the gid/uid between inside and outside container
+### To correspond the main process user's gid/uid between inside and outside container
 
 * To find a specific user's UID and GID, at the shell prompt, enter: ``id <username>``
 
