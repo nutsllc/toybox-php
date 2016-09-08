@@ -44,6 +44,19 @@ toybox-php:
 		- "8080:80"
 ```
 
+## Main file/directory path in this container
+
+### Apache
+
+* Document root - ``/var/www/html``
+* Configuration files - ``/etc/apache2``
+
+### PHP
+
+* php.ini - ``/usr/local/etc/php/php.ini``
+* Loaded modules conf files - ``/usr/local/etc/php/conf.d``
+
+
 ## Included modules
 
 ### PHP Modules
