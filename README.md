@@ -44,6 +44,39 @@ toybox-php:
 		- "8080:80"
 ```
 
+with Database(MySQL)
+
+```
+toybox-php:
+	image: nutsllc/toybox-php:latest
+	volumes:
+		- "./.data/htdocs:/usr/local/apache2/htdocs"
+		- "./.data/conf:/etc/apache2"
+	links:
+		- mysql
+	environment:
+		- TOYBOX_UID=1000
+		- TOYBOX_GID=1000
+	ports:
+		- "8080:80"
+
+mysql:
+	image: mysql:5.7.13
+	volumes:
+    	- ./.data/mysql:/var/lib/mysql
+	environment:
+    	- MYSQL_ROOT_PASSWORD=root
+```
+
+If you use phpMyAdmin to manage MySQL, using it is just execute command below after running MySQL container.
+
+```bash
+docker run -d -e PMA_HOST=<IP Address of MySQL container> -p 8888:80 phpmyadmin/phpmyadmin
+```
+
+Then acsess to ``http://<IP Address of phpMyAdmin container>:8888`` from your web browser.
+
+
 ## Main file/directory path in this container
 
 ### Apache
