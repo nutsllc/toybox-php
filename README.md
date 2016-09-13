@@ -2,7 +2,9 @@
 
 A Dockerfile for deploying a PHP using Docker container.
 
-This image has been extended [the official PHP image](https://hub.docker.com/_/php/) which is maintained in the [docker-library/php](https://github.com/docker-library/php/) GitHub repository and also registered to the [Docker Hub](https://hub.docker.com/r/nutsllc/toybox-php/) that is the official docker image registory.
+This image is extended [the official PHP image](https://hub.docker.com/_/php/) which is maintained in the [docker-library/php](https://github.com/docker-library/php/) GitHub repository and also registered to the [Docker Hub](https://hub.docker.com/r/nutsllc/toybox-php/) that is the official docker image registory.
+
+In addition, this image is compatible with [ToyBox](https://github.com/nutsllc/toybox) complytely to manage the applications on Docker.
 
 ## Run container
 
