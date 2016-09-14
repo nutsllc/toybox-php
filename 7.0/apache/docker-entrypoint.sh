@@ -4,7 +4,7 @@ set -e
 user="www-data"
 group="www-data"
 
-if [ -n "${TOYBOX_GID}" ] && ! cat /etc/passwd | awk 'BEGIN{ FS= ":" }{ print $4 }' | grep ${TOYBOX_GID} > /dev/null 2>&1; then
+if [ -n "${TOYBOX_GID}" ] && ! cat /etc/group | awk 'BEGIN{ FS= ":" }{ print $3 }' | grep ${TOYBOX_GID} > /dev/null 2>&1; then
     groupmod -g ${TOYBOX_GID} ${group}
     echo "GID of ${group} has been changed."
 fi
