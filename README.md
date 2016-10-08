@@ -26,11 +26,73 @@ for PHP 5.6:
 
 ### Persistent the Apache2 document root contents
 
-``docker run -it -p 8080:80 -v $(pwd)/.datas/docroot:/usr/local/apache2/htdocs -d nutsllc/toybox-php``
+``docker run -it -p 8080:80 -v "$(pwd)"/.datas/docroot:/usr/local/apache2/htdocs -d nutsllc/toybox-php``
 
 ### Persistent the Apache2 config files
 
-``docker run -it -p 8080:80 -v $(pwd)/.data/conf:/etc/apache2 -d nutsllc/toybox-php``
+``docker run -it -p 8080:80 -v "$(pwd)"/.data/conf:/etc/apache2 -d nutsllc/toybox-php``
+
+## Add PHP extensions
+
+PHP extensions can be added by environment variables with ``enable`` value.
+
+For example:
+
+``docker run -it -p 8080:80 -e GD=enable -e MEMCACHED=enable -e APCU=enable -e OPCACHE=enable -e XDEBUG=true -d nutsllc/toybox-php:7.0.8-apache``
+
+### List of the PHP extensions that you can add
+
+* ``-e CALENDAR=disable``
+* ``-e EXIF=disable``
+* ``-e GD=enable``
+* ``-e GETTEXT=disable``
+* ``-e INTL=disable``
+* ``-e MCRYPT=disable``
+* ``-e MEMCACHED=enable``
+* ``-e MYSQLI=enable``
+* ``-e OPCACHE=disable``
+* ``-e PDO_MYSQL=disable``
+* ``-e PDO_PGSQL=disable``
+* ``-e SOCKETS=disable``
+* ``-e ZIP=disable``
+* ``-e APCU=disable``
+* ``-e REDIS=disable``
+* ``-e XDEBUG=disable``
+
+## Change php.ini parameter value
+
+Parameter values in php.ini can be changed by environment variables with new value.
+
+For example:
+
+``docker run -it -p 8080:80 -e MEMORY_LIMIT=64M -e POST_MAX_SIZE=32M -e UPLOAD_MAX_FILESIZE=8M -d nutsllc/toybox-php:7.0.8-apache``
+
+### List of the php.ini paramaters that you can change
+
+Values list below are default value.
+
+* ``-e MEMORY_LIMIT=32M"``
+* ``-e POST_MAX_SIZE=16M"``
+* ``-e UPLOAD_MAX_FILESIZE=8M"``
+* ``-e ERROR_REPORTING=E_ALL|E_STRICT"``
+* ``-e DISPLAY_ERRORS=Off"``
+* ``-e LOG_ERRORS=On"``
+* ``-e ERROR_LOG=/var/log/php_error.log"``
+* ``-e DEFAULT_CHARSET='UTF-8'"``
+* ``-e MBSTRING_LANGUAGE=Japanese"``
+* ``-e MBSTRING_INTERNAL_ENCODING=UTF-8"``
+* ``-e MBSTRING_ENCODING_TRANSLATION=Off"``
+* ``-e MBSTRING_HTTP_INPUT=pass"``
+* ``-e MBSTRING_HTTP_OUTPUT=pass"``
+* ``-e MBSTRING_DETECT_ORDER=auto"``
+* ``-e EXPOSE_PHP=Off"``
+* ``-e SESSION_HASH_FUNCTION=0"``
+* ``-e SESSION_SAVE_HANDLER=files"``
+* ``-e SESSION_SAVE_PATH='/var/lib/php/session'"``
+* ``-e SHORT_OPEN_TAG=On"``
+* ``-e MAX_EXECUTION_TIME=30"``
+* ``-e DATE_TIMEZONE=UTC"``
+
 
 ## Docker Compose example
 ```
@@ -42,11 +104,19 @@ toybox-php:
 	environment:
 		- TOYBOX_UID=1000
 		- TOYBOX_GID=1000
+		- APCU=enable
+		- OPCACHE=enable
+		- GD=enable
+		- EXIF=enable
+		- XDEBUG=enable
+		- MEMORY_LIMIT=128M
+		- POST_MAX_SIZE=64M
+		- UPLOAD_MAX_FILESIZE=32M
 	ports:
 		- "8080:80"
 ```
 
-with Database(MySQL)
+### with Database(MySQL)
 
 ```
 toybox-php:
@@ -59,6 +129,15 @@ toybox-php:
 	environment:
 		- TOYBOX_UID=1000
 		- TOYBOX_GID=1000
+		- APCU=enable
+		- OPCACHE=enable
+		- GD=enable
+		- EXIF=enable
+		- PDO_MYSQL=enable
+		- XDEBUG=enable
+		- MEMORY_LIMIT=128M
+		- POST_MAX_SIZE=64M
+		- UPLOAD_MAX_FILESIZE=32M
 	ports:
 		- "8080:80"
 
@@ -69,15 +148,6 @@ mysql:
 	environment:
     	- MYSQL_ROOT_PASSWORD=root
 ```
-
-If you use phpMyAdmin to manage MySQL, using it is just execute command below after running MySQL container.
-
-```bash
-docker run -d -e PMA_HOST=<IP Address of MySQL container> -p 8888:80 phpmyadmin/phpmyadmin
-```
-
-Then acsess to ``http://<IP Address of phpMyAdmin container>:8888`` from your web browser.
-
 
 ## Main file/directory path in this container
 
@@ -96,8 +166,9 @@ Then acsess to ``http://<IP Address of phpMyAdmin container>:8888`` from your we
 
 ### PHP Modules
 
-* apc
-* apcu
+It shuld be apply an enviroment variable like ``-e apcu=enable`` to use optional modules. More detail, see ``Add PHP Modules`` section above.
+
+* apcu(Optional)
 * calendar
 * Core
 * ctype
@@ -105,50 +176,52 @@ Then acsess to ``http://<IP Address of phpMyAdmin container>:8888`` from your we
 * date
 * dom
 * ereg
-* exif
+* exif(Optional)
 * fileinfo
 * filter
-* gd
-* gettext
+* gd(Optional)
+* gettext(Optional)
 * hash
 * iconv
-* intl
+* intl(Optional)
 * json
 * libxml
 * mbstring
-* mcrypt
-* memcached
-* mysqli
+* mcrypt(Optional)
+* memcached(Optional)
+* mysqli(Optional)
 * mysqlnd
+* opcache(Optional)
 * openssl
 * pcre
 * PDO
-* pdo_mysql
-* pdo_pgsql
+* pdo_mysql(Optional)
+* pdo_pgsql(Optional)
 * pdo_sqlite
 * pgsql
 * Phar
 * posix
 * readline
-* redis
+* redis(Optional)
 * Reflection
 * session
 * SimpleXML
-* sockets
+* sockets(Optional)
 * SPL
 * sqlite3
 * standard
 * tokenizer
+* xdebug(Optional)
 * xml
 * xmlreader
 * xmlwriter
-* zip
+* zip(Optional)
 * zlib
 
 ### PHP Zend Modules
 
-* Xdebug
-* Zend OPcache
+* Xdebug(Option)
+* Zend OPcache(Optional)
 
 ### Apache modules
 
