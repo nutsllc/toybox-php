@@ -8,26 +8,11 @@ ENV XDEBUG_VERSION 2.4.1
 
 RUN a2enmod rewrite expires
 
-#GD "libpng12-dev" "libjpeg-dev" "libgd-tools"
-#INTL "libicu-dev"
-#MCRYPT "libmcrypt-dev"
-#PDO_PGSQL "libpq-dev"
-#ZIP "libzip-dev"
-#MEMCACHED "libmemcached-dev" "libz-dev"
-
 RUN apt-get update && apt-get install -y \
     yes \
     git \
     && apt-get clean \
     && rm -rf /var/apt/lists/*
-
-#RUN apt-get update && apt-get install -y \
-#    libpng12-dev libjpeg-dev libgd-tools \
-#    libicu-dev \
-#    libmcrypt-dev \
-#    libpq-dev \
-#    libzip-dev \
-#    libmemcached-dev libz-dev
 
 RUN tar czf /usr/src/apache2-default-doc.tar.gz -C /var/www/html ./ \
     && tar czf /usr/src/apache2-conf.tar.gz -C /etc/apache2 ./ \
