@@ -6,7 +6,7 @@ This image is extended [the official PHP image](https://hub.docker.com/_/php/) w
 
 In addition, this image is compatible with [ToyBox](https://github.com/nutsllc/toybox) complytely to manage the applications on Docker.
 
-## Run container
+## Running container
 
 ### The simplest way to run container
 
@@ -26,11 +26,76 @@ for PHP 5.6:
 
 ### Persistent the Apache2 document root contents
 
-``docker run -it -p 8080:80 -v $(pwd)/.datas/docroot:/usr/local/apache2/htdocs -d nutsllc/toybox-php``
+``docker run -it -p 8080:80 -v "$(pwd)"/.data/docroot:/usr/local/apache2/htdocs -d nutsllc/toybox-php``
 
 ### Persistent the Apache2 config files
 
-``docker run -it -p 8080:80 -v $(pwd)/.data/conf:/etc/apache2 -d nutsllc/toybox-php``
+``docker run -it -p 8080:80 -v "$(pwd)"/.data/conf:/etc/apache2 -d nutsllc/toybox-php``
+
+### Persistent the PHP config files
+
+``docker run -it -p 8080:80 -v "$(pwd)"/.data/conf:/usr/local/etc/php -d nutsllc/toybox-php``
+
+## Adding PHP extensions
+
+PHP extensions can be added by environment variables with ``enable`` value.
+
+For example:
+
+``docker run -it -p 8080:80 -e GD=enable -e MEMCACHED=enable -e APCU=enable -e OPCACHE=enable -e XDEBUG=true -d nutsllc/toybox-php:7.0.8-apache``
+
+### List of the PHP extensions that you can add to container
+
+* ``-e CALENDAR=enable``
+* ``-e EXIF=enable``
+* ``-e GD=enable``
+* ``-e GETTEXT=enable``
+* ``-e INTL=enable``
+* ``-e MCRYPT=enable``
+* ``-e MEMCACHED=enable``
+* ``-e MYSQLI=enable``
+* ``-e OPCACHE=enable``
+* ``-e PDO_MYSQL=enable``
+* ``-e PDO_PGSQL=enable``
+* ``-e SOCKETS=enable``
+* ``-e ZIP=enable``
+* ``-e APCU=enable``
+* ``-e REDIS=enable``
+* ``-e XDEBUG=enable``
+
+## Change php.ini parameter value
+
+Parameter values in php.ini can be changed by environment variables with new value.
+
+For example:
+
+``docker run -it -p 8080:80 -e MEMORY_LIMIT=64M -e POST_MAX_SIZE=32M -e UPLOAD_MAX_FILESIZE=8M -d nutsllc/toybox-php:7.0.8-apache``
+
+### List of the php.ini paramaters that you can change
+
+Values list below are a default value.
+
+* ``-e MEMORY_LIMIT=32M"``
+* ``-e POST_MAX_SIZE=16M"``
+* ``-e UPLOAD_MAX_FILESIZE=8M"``
+* ``-e ERROR_REPORTING=E_ALL|E_STRICT"``
+* ``-e DISPLAY_ERRORS=Off"``
+* ``-e LOG_ERRORS=On"``
+* ``-e ERROR_LOG=/var/log/php_error.log"``
+* ``-e DEFAULT_CHARSET='UTF-8'"``
+* ``-e MBSTRING_LANGUAGE=Japanese"``
+* ``-e MBSTRING_INTERNAL_ENCODING=UTF-8"``
+* ``-e MBSTRING_ENCODING_TRANSLATION=Off"``
+* ``-e MBSTRING_HTTP_INPUT=pass"``
+* ``-e MBSTRING_HTTP_OUTPUT=pass"``
+* ``-e MBSTRING_DETECT_ORDER=auto"``
+* ``-e EXPOSE_PHP=Off"``
+* ``-e SESSION_HASH_FUNCTION=0"``
+* ``-e SESSION_SAVE_HANDLER=files"``
+* ``-e SESSION_SAVE_PATH='/var/lib/php/session'"``
+* ``-e SHORT_OPEN_TAG=On"``
+* ``-e MAX_EXECUTION_TIME=30"``
+* ``-e DATE_TIMEZONE=UTC"``
 
 ## Docker Compose example
 ```
