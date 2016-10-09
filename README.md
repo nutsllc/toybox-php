@@ -6,7 +6,7 @@ This image is extended [the official PHP image](https://hub.docker.com/_/php/) w
 
 In addition, this image is compatible with [ToyBox](https://github.com/nutsllc/toybox) complytely to manage the applications on Docker.
 
-## Run container
+## Running container
 
 ### The simplest way to run container
 
@@ -26,13 +26,17 @@ for PHP 5.6:
 
 ### Persistent the Apache2 document root contents
 
-``docker run -it -p 8080:80 -v "$(pwd)"/.datas/docroot:/usr/local/apache2/htdocs -d nutsllc/toybox-php``
+``docker run -it -p 8080:80 -v "$(pwd)"/.data/docroot:/usr/local/apache2/htdocs -d nutsllc/toybox-php``
 
 ### Persistent the Apache2 config files
 
 ``docker run -it -p 8080:80 -v "$(pwd)"/.data/conf:/etc/apache2 -d nutsllc/toybox-php``
 
-## Add PHP extensions
+### Persistent the PHP config files
+
+``docker run -it -p 8080:80 -v "$(pwd)"/.data/conf:/usr/local/etc/php -d nutsllc/toybox-php``
+
+## Adding PHP extensions
 
 PHP extensions can be added by environment variables with ``enable`` value.
 
@@ -40,24 +44,24 @@ For example:
 
 ``docker run -it -p 8080:80 -e GD=enable -e MEMCACHED=enable -e APCU=enable -e OPCACHE=enable -e XDEBUG=true -d nutsllc/toybox-php:7.0.8-apache``
 
-### List of the PHP extensions that you can add
+### List of the PHP extensions that you can add to container
 
-* ``-e CALENDAR=disable``
-* ``-e EXIF=disable``
+* ``-e CALENDAR=enable``
+* ``-e EXIF=enable``
 * ``-e GD=enable``
-* ``-e GETTEXT=disable``
-* ``-e INTL=disable``
-* ``-e MCRYPT=disable``
+* ``-e GETTEXT=enable``
+* ``-e INTL=enable``
+* ``-e MCRYPT=enable``
 * ``-e MEMCACHED=enable``
 * ``-e MYSQLI=enable``
-* ``-e OPCACHE=disable``
-* ``-e PDO_MYSQL=disable``
-* ``-e PDO_PGSQL=disable``
-* ``-e SOCKETS=disable``
-* ``-e ZIP=disable``
-* ``-e APCU=disable``
-* ``-e REDIS=disable``
-* ``-e XDEBUG=disable``
+* ``-e OPCACHE=enable``
+* ``-e PDO_MYSQL=enable``
+* ``-e PDO_PGSQL=enable``
+* ``-e SOCKETS=enable``
+* ``-e ZIP=enable``
+* ``-e APCU=enable``
+* ``-e REDIS=enable``
+* ``-e XDEBUG=enable``
 
 ## Change php.ini parameter value
 
@@ -69,7 +73,7 @@ For example:
 
 ### List of the php.ini paramaters that you can change
 
-Values list below are default value.
+Values list below are a default value.
 
 * ``-e MEMORY_LIMIT=32M"``
 * ``-e POST_MAX_SIZE=16M"``
