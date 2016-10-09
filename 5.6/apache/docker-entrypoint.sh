@@ -29,11 +29,6 @@ mkdir -p ${php_confdir}
 tar xzf /usr/src/php-conf.tar.gz -C ${php_confdir}
 chown -R ${user}:${group} ${php_confdir}
 
-#RUN apt-get update && apt-get install -y git unzip wget \
-#    libmcrypt-dev mcrypt libpng12-dev libjpeg-dev libgd-tools && rm -rf /var/lib/apt/lists/* \
-#	&& docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
-#    && docker-php-ext-install exif gd json mbstring mcrypt mysqli opcache zip
-
 # ---------------------------------------------------------------------------
 
 php_exts=()
@@ -183,7 +178,9 @@ if [ ${PHP_VERSION:0:1} = "7" ] && [ enable = "${MEMCACHED}" ]; then
     echo "extension=${install_dir}" > /usr/local/etc/php/conf.d/memcached.ini
 fi
 
-# set php.ini
+# -----------------------------------------------
+# php.ini
+# -----------------------------------------------
 echo "----------- setup php.ini ------------"
 : ${MEMORY_LIMIT:=32M}
 : ${POST_MAX_SIZE:=16M}

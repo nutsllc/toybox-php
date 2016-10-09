@@ -107,11 +107,19 @@ toybox-php:
 	environment:
 		- TOYBOX_UID=1000
 		- TOYBOX_GID=1000
+		- APCU=enable
+		- OPCACHE=enable
+		- GD=enable
+		- EXIF=enable
+		- XDEBUG=enable
+		- MEMORY_LIMIT=128M
+		- POST_MAX_SIZE=64M
+		- UPLOAD_MAX_FILESIZE=32M
 	ports:
 		- "8080:80"
 ```
 
-with Database(MySQL)
+### with Database(MySQL)
 
 ```
 toybox-php:
@@ -124,6 +132,15 @@ toybox-php:
 	environment:
 		- TOYBOX_UID=1000
 		- TOYBOX_GID=1000
+		- APCU=enable
+		- OPCACHE=enable
+		- GD=enable
+		- EXIF=enable
+		- PDO_MYSQL=enable
+		- XDEBUG=enable
+		- MEMORY_LIMIT=128M
+		- POST_MAX_SIZE=64M
+		- UPLOAD_MAX_FILESIZE=32M
 	ports:
 		- "8080:80"
 
@@ -134,15 +151,6 @@ mysql:
 	environment:
     	- MYSQL_ROOT_PASSWORD=root
 ```
-
-If you use phpMyAdmin to manage MySQL, using it is just execute command below after running MySQL container.
-
-```bash
-docker run -d -e PMA_HOST=<IP Address of MySQL container> -p 8888:80 phpmyadmin/phpmyadmin
-```
-
-Then acsess to ``http://<IP Address of phpMyAdmin container>:8888`` from your web browser.
-
 
 ## Main file/directory path in this container
 
@@ -161,8 +169,9 @@ Then acsess to ``http://<IP Address of phpMyAdmin container>:8888`` from your we
 
 ### PHP Modules
 
-* apc
-* apcu
+It shuld be apply an enviroment variable like ``-e apcu=enable`` to use optional modules. More detail, see ``Add PHP Modules`` section above.
+
+* apcu(Optional)
 * calendar
 * Core
 * ctype
@@ -170,50 +179,52 @@ Then acsess to ``http://<IP Address of phpMyAdmin container>:8888`` from your we
 * date
 * dom
 * ereg
-* exif
+* exif(Optional)
 * fileinfo
 * filter
-* gd
-* gettext
+* gd(Optional)
+* gettext(Optional)
 * hash
 * iconv
-* intl
+* intl(Optional)
 * json
 * libxml
 * mbstring
-* mcrypt
-* memcached
-* mysqli
+* mcrypt(Optional)
+* memcached(Optional)
+* mysqli(Optional)
 * mysqlnd
+* opcache(Optional)
 * openssl
 * pcre
 * PDO
-* pdo_mysql
-* pdo_pgsql
+* pdo_mysql(Optional)
+* pdo_pgsql(Optional)
 * pdo_sqlite
 * pgsql
 * Phar
 * posix
 * readline
-* redis
+* redis(Optional)
 * Reflection
 * session
 * SimpleXML
-* sockets
+* sockets(Optional)
 * SPL
 * sqlite3
 * standard
 * tokenizer
+* xdebug(Optional)
 * xml
 * xmlreader
 * xmlwriter
-* zip
+* zip(Optional)
 * zlib
 
 ### PHP Zend Modules
 
-* Xdebug
-* Zend OPcache
+* Xdebug(Option)
+* Zend OPcache(Optional)
 
 ### Apache modules
 
