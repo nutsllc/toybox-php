@@ -35,7 +35,7 @@ RUN tar czf /usr/src/apache2-default-doc.tar.gz -C /var/www/html ./ \
 
 VOLUME /var/www/html
 
-COPY docker-entrypoint.sh /entrypoint-ex.sh
+ADD docker-entrypoint.sh /entrypoint-ex.sh
 ENTRYPOINT ["/entrypoint-ex.sh"]
 
 CMD ["apache2-foreground"]
