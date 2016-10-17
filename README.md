@@ -75,27 +75,27 @@ For example:
 
 Values list below are a default value.
 
-* ``-e MEMORY_LIMIT=32M"``
-* ``-e POST_MAX_SIZE=16M"``
-* ``-e UPLOAD_MAX_FILESIZE=8M"``
-* ``-e ERROR_REPORTING=E_ALL|E_STRICT"``
-* ``-e DISPLAY_ERRORS=Off"``
-* ``-e LOG_ERRORS=On"``
-* ``-e ERROR_LOG=/var/log/php_error.log"``
-* ``-e DEFAULT_CHARSET='UTF-8'"``
-* ``-e MBSTRING_LANGUAGE=Japanese"``
-* ``-e MBSTRING_INTERNAL_ENCODING=UTF-8"``
-* ``-e MBSTRING_ENCODING_TRANSLATION=Off"``
-* ``-e MBSTRING_HTTP_INPUT=pass"``
-* ``-e MBSTRING_HTTP_OUTPUT=pass"``
-* ``-e MBSTRING_DETECT_ORDER=auto"``
-* ``-e EXPOSE_PHP=Off"``
-* ``-e SESSION_HASH_FUNCTION=0"``
-* ``-e SESSION_SAVE_HANDLER=files"``
-* ``-e SESSION_SAVE_PATH='/var/lib/php/session'"``
-* ``-e SHORT_OPEN_TAG=On"``
-* ``-e MAX_EXECUTION_TIME=30"``
-* ``-e DATE_TIMEZONE=UTC"``
+* ``-e MEMORY_LIMIT="32M"``
+* ``-e POST_MAX_SIZE="16M"``
+* ``-e UPLOAD_MAX_FILESIZE="8M"``
+* ``-e ERROR_REPORTING="E_ALL|E_STRICT"``
+* ``-e DISPLAY_ERRORS="Off"``
+* ``-e LOG_ERRORS="On"``
+* ``-e ERROR_LOG="/var/log/php_error.log"``
+* ``-e DEFAULT_CHARSET="'UTF-8'"``
+* ``-e MBSTRING_LANGUAGE="Japanese"``
+* ``-e MBSTRING_INTERNAL_ENCODING="UTF-8"``
+* ``-e MBSTRING_ENCODING_TRANSLATION="Off"``
+* ``-e MBSTRING_HTTP_INPUT="pass"``
+* ``-e MBSTRING_HTTP_OUTPUT="pass"``
+* ``-e MBSTRING_DETECT_ORDER="auto"``
+* ``-e EXPOSE_PHP="Off"``
+* ``-e SESSION_HASH_FUNCTION="0"``
+* ``-e SESSION_SAVE_HANDLER="files"``
+* ``-e SESSION_SAVE_PATH="'/var/lib/php/session'"``
+* ``-e SHORT_OPEN_TAG="On"``
+* ``-e MAX_EXECUTION_TIME="30"``
+* ``-e DATE_TIMEZONE="UTC"``
 
 ## Docker Compose example
 ```
