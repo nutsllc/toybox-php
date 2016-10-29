@@ -63,6 +63,8 @@ For example:
 * ``-e REDIS=enable``
 * ``-e XDEBUG=enable``
 
+If you want to enable all of the modules, you could use ``-e ALL_PHP_MODULES=enable``, no more need other options.
+
 ## Change php.ini parameter value
 
 Parameter values in php.ini can be changed by environment variables with new value.
@@ -102,8 +104,8 @@ Values list below are a default value.
 toybox-php:
 	image: nutsllc/toybox-php:latest
 	volumes:
-		- "./.data/htdocs:/usr/local/apache2/htdocs"
-		- "./.data/conf:/etc/apache2"
+		- "./data/htdocs:/usr/local/apache2/htdocs"
+		- "./data/conf:/etc/apache2"
 	environment:
 		- TOYBOX_UID=1000
 		- TOYBOX_GID=1000
