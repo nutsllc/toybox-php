@@ -4,23 +4,21 @@ A Dockerfile for deploying a PHP using Docker container.
 
 This image is extended [the official PHP image](https://hub.docker.com/_/php/) which is maintained in the [docker-library/php](https://github.com/docker-library/php/) GitHub repository and also registered to the [Docker Hub](https://hub.docker.com/r/nutsllc/toybox-php/) that is the official docker image registory.
 
-In addition, this image is compatible with [ToyBox](https://github.com/nutsllc/toybox) complytely to manage the applications on Docker.
-
 ## Running container
 
 ### The simplest way to run container
 
-for PHP 7.0:
+for PHP 7.0 (with Apache2):
 
 ``docker run -p 8080:80 -itd nutsllc/toybox-php:7.0-apache``
 
-for PHP 5.6:
+for PHP 5.6 (with Apache2):
 
 ``docker run -p 8080:80 -itd nutsllc/toybox-php:5.6-apache``
 
 for PHP-FPM 7.0:
 
-``docker run --name fpm70 -itd nutsllc/toybox-php:7.0-fpm``
+``docker run --name fpm70 -itd nutsllc/toybox-php:7.0-fpm``  
 
 for PHP-FPM 5.6:
 
@@ -112,7 +110,7 @@ Values list below are a default value.
 ### PHP
 
 ```
-toybox-php:
+apache-php:
 	image: nutsllc/toybox-php:latest
 	volumes:
 		- "./data/htdocs:/usr/local/apache2/htdocs"
@@ -126,11 +124,11 @@ toybox-php:
 ### PHP with Database(MySQL)
 
 ```
-toybox-php:
+apache-php:
 	image: nutsllc/toybox-php:latest
 	volumes:
-		- "./.data/htdocs:/usr/local/apache2/htdocs"
-		- "./.data/conf:/etc/apache2"
+		- "./data/docroot:/usr/local/apache2/htdocs"
+		- "./data/apache-conf:/etc/apache2"
 	links:
 		- mysql
 	environment:
@@ -141,7 +139,7 @@ toybox-php:
 mysql:
 	image: mysql:5.7.13
 	volumes:
-    	- ./.data/mysql:/var/lib/mysql
+    	- ./data/mysql:/var/lib/mysql
 	environment:
     	- MYSQL_ROOT_PASSWORD=root
 ```
