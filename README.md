@@ -12,19 +12,19 @@ In addition, this image is compatible with [ToyBox](https://github.com/nutsllc/t
 
 for PHP 7.0:
 
-``docker run -it -p 8080:80 -d nutsllc/toybox-php:7.0.8-apache``
+``docker run -p 8080:80 -itd nutsllc/toybox-php:7.0-apache``
 
 for PHP 5.6:
 
-``docker run -it -p 8080:80 -d nutsllc/toybox-php:5.6.23-apache``
+``docker run -p 8080:80 -itd nutsllc/toybox-php:5.6-apache``
 
 for PHP-FPM 7.0:
 
-``docker run -it -p 8080:80 -d nutsllc/toybox-php:7.0.8-fpm``
+``docker run --name fpm70 -itd nutsllc/toybox-php:7.0-fpm``
 
 for PHP-FPM 5.6:
 
-``docker run -it -p 8080:80 -d nutsllc/toybox-php:5.6.23-fpm``
+``docker run --name fpm56 -idd nutsllc/toybox-php:5.6-fpm``
 
 ### To correspond the main process user's gid/uid between inside and outside container
 
