@@ -18,6 +18,14 @@ for PHP 5.6:
 
 ``docker run -it -p 8080:80 -d nutsllc/toybox-php:5.6.23-apache``
 
+for PHP-FPM 7.0:
+
+``docker run -it -p 8080:80 -d nutsllc/toybox-php:7.0.8-fpm``
+
+for PHP-FPM 5.6:
+
+``docker run -it -p 8080:80 -d nutsllc/toybox-php:5.6.23-fpm``
+
 ### To correspond the main process user's gid/uid between inside and outside container
 
 * To find a specific user's UID and GID, at the shell prompt, enter: ``id <username>``
@@ -100,6 +108,9 @@ Values list below are a default value.
 * ``-e DATE_TIMEZONE="UTC"``
 
 ## Docker Compose example
+
+### PHP
+
 ```
 toybox-php:
 	image: nutsllc/toybox-php:latest
@@ -107,21 +118,12 @@ toybox-php:
 		- "./data/htdocs:/usr/local/apache2/htdocs"
 		- "./data/conf:/etc/apache2"
 	environment:
-		- TOYBOX_UID=1000
-		- TOYBOX_GID=1000
-		- APCU=enable
-		- OPCACHE=enable
-		- GD=enable
-		- EXIF=enable
-		- XDEBUG=enable
-		- MEMORY_LIMIT=128M
-		- POST_MAX_SIZE=64M
-		- UPLOAD_MAX_FILESIZE=32M
+		- ALL_PHP_MODULES=enable
 	ports:
 		- "8080:80"
 ```
 
-### with Database(MySQL)
+### PHP with Database(MySQL)
 
 ```
 toybox-php:
@@ -132,17 +134,7 @@ toybox-php:
 	links:
 		- mysql
 	environment:
-		- TOYBOX_UID=1000
-		- TOYBOX_GID=1000
-		- APCU=enable
-		- OPCACHE=enable
-		- GD=enable
-		- EXIF=enable
-		- PDO_MYSQL=enable
-		- XDEBUG=enable
-		- MEMORY_LIMIT=128M
-		- POST_MAX_SIZE=64M
-		- UPLOAD_MAX_FILESIZE=32M
+		- ALL_PHP_MODULES=enable
 	ports:
 		- "8080:80"
 
@@ -152,6 +144,44 @@ mysql:
     	- ./.data/mysql:/var/lib/mysql
 	environment:
     	- MYSQL_ROOT_PASSWORD=root
+```
+
+### PHP-FPM with Nginx and Database
+
+```bash
+nginx:
+    image: nutsllc/toybox-nginx
+    links:
+        - php70-fpm
+        - mariadb
+    ports:
+        - 8080:80
+    environment:
+        - PHP_FPM_HOST=php70-fpm:9000
+    volumes_from:
+        - data
+
+php70-fpm:
+    image: nutsllc/toybox-php:7.0-fpm
+    links:
+        - mariadb
+	environment:
+		- ALL_PHP_MODULES=enable
+    volumes_from:
+        - data
+
+mariadb:
+    image: nutsllc/toybox-mariadb
+    environment:
+        - MYSQL_ROOT_PASSWORD=root
+
+data:
+    image: busybox
+    volumes:
+        - "./data/docroot:/usr/share/nginx/html"
+        - "./data/nginx-conf:/etc/nginx"
+        - "./data/mariadb-conf:/var/run/mysql"
+
 ```
 
 ## Main file/directory path in this container
