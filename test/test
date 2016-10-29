@@ -3,12 +3,15 @@ set -e
 
 test_container="nuts-php-test"
 
+php_version=5.6
+#php_version=7.0
+
 function _build() {
     printf ">>> build..."
     dir="$(cd $(dirname $0);pwd)/../${php_version}/apache/"
-#docker build -t ${test_container} $(cd $(dirname $0);pwd)/../ > /dev/null 2>&1
-#docker build -t ${test_container} ${dir} > /dev/null 2>&1
-docker build -t ${test_container} ${dir}
+    #docker build -t ${test_container} $(cd $(dirname $0);pwd)/../ > /dev/null 2>&1
+    #docker build -t ${test_container} ${dir} > /dev/null 2>&1
+    docker build -t ${test_container} ${dir}
     echo "done"
 }
 
@@ -76,26 +79,23 @@ function _rmi() {
     docker rmi -f ${test_container}
 }
 
-#php_version=5.6
-php_version=7.0
-
 modules=(
-    "-e CALENDAR=disable"
-    "-e EXIF=disable"
+    "-e CALENDAR=enable"
+    "-e EXIF=enable"
     "-e GD=enable"
-    "-e GETTEXT=disable"
-    "-e INTL=disable"
-    "-e MCRYPT=disable"
+    "-e GETTEXT=enable"
+    "-e INTL=enable"
+    "-e MCRYPT=enable"
     "-e MEMCACHED=enable"
     "-e MYSQLI=enable"
-    "-e OPCACHE=disable"
-    "-e PDO_MYSQL=disable"
-    "-e PDO_PGSQL=disable"
-    "-e SOCKETS=disable"
-    "-e ZIP=disable"
-    "-e APCU=disable"
-    "-e REDIS=disable"
-    "-e XDEBUG=disable"
+    "-e OPCACHE=enable"
+    "-e PDO_MYSQL=enable"
+    "-e PDO_PGSQL=enable"
+    "-e SOCKETS=enable"
+    "-e ZIP=enable"
+    "-e APCU=enable"
+    "-e REDIS=enable"
+    "-e XDEBUG=enable"
 )
 
 php_ini_values=(
