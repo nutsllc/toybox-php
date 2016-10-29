@@ -135,6 +135,8 @@ if [ ! -f /usr/local/etc/php/php.ini ]; then
     } > /usr/local/etc/php/php.ini
 fi
 
-rm /php_extension_installer.sh
+[ -f /php_extension_installer.sh ] && {
+    rm /php_extension_installer.sh
+}
 
 exec "$@"
