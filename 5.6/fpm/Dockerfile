@@ -51,8 +51,7 @@ RUN apt-get update && apt-get install -y yes \
     && apt-get clean \
     && rm -rf /var/apt/lists/*
 
-VOLUME /var/www/html
-
+WORKDIR /
 EXPOSE 9000
 
 COPY docker-entrypoint.sh /entrypoint-ex.sh
