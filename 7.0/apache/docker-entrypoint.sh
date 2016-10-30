@@ -68,10 +68,6 @@ chown -R ${user}:${group} ${php_confdir}
             [ ${M} = OPCACHE ] && [ -f ${conf_dir}/${m}-recommended.ini ] && {
                 rm ${conf_dir}/${m}-recommended.ini
             }
-            [ ${M} = MEMCACHED ] && [ ${PHP_VERSION:0:1} = "7" ] && [ -f ${conf_dir}/${m}.ini ] && {
-                rm ${conf_dir}/${m}.ini
-                echo "${m} is disabled." && continue
-            }
             [ -f ${conf_dir}/docker-php-ext-${m}.ini ] && {
                 rm ${conf_dir}/docker-php-ext-${m}.ini
                 echo "${m} is disabled."

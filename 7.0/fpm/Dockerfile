@@ -44,7 +44,7 @@ ENV PHP_VERSION=7.0.8 \
 
 COPY php_extension_installer.sh /php_extension_installer.sh
 
-RUN apt-get update && apt-get install -y yes git \
+RUN apt-get update && apt-get install -y yes \
     && tar czf /usr/src/apache2-default-doc.tar.gz -C /var/www/html ./ \
     && tar czf /usr/src/php-conf.tar.gz -C /usr/local/etc/php ./ \
     && /php_extension_installer.sh \
