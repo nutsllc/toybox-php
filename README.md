@@ -26,9 +26,9 @@ for PHP-FPM 5.6:
 
 ### To correspond the main process user's gid/uid between inside and outside container
 
-* To find a specific user's UID and GID, at the shell prompt, enter: ``id <username>``
+* To find a specific user's UID and GID, in the shell prompt at the local machine, enter: ``id <username>``
 
-``docker run -it -p 8080:80 -e TOYBOX_GID=1000 -e TOYBOX_UID=1000 -d nutsllc/toybox-php``
+``docker run -it -p 8080:80 -e TOYBOX_GID=<your gid> -e TOYBOX_UID=<your uid> -d nutsllc/toybox-php``
 
 ### Persistent the Apache2 document root contents
 
@@ -50,7 +50,7 @@ For example:
 
 ``docker run -it -p 8080:80 -e GD=enable -e MEMCACHED=enable -e APCU=enable -e OPCACHE=enable -e XDEBUG=true -d nutsllc/toybox-php:7.0.8-apache``
 
-### List of the PHP extensions that you can add to container
+### List of the PHP extensions that you can enable to container
 
 * ``-e CALENDAR=enable``
 * ``-e EXIF=enable``

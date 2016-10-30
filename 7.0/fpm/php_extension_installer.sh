@@ -116,9 +116,11 @@ echo $(pwd)
 if [ "${#pecl_exts[@]}" -ne 0 ]; then
     echo "----------- pecl install  ------------"
     for module in ${pecl_exts[@]}; do
-        pkg=$(echo ${module} | cut -d"-" -f1)
-        yes /usr | pecl install ${module}
-        docker-php-ext-enable $(echo ${pkg} | tr '[A-Z]' '[a-z]')
+        ( \
+            pkg=$(echo ${module} | cut -d"-" -f1) \
+            && yes /usr | pecl install ${module} \
+            && docker-php-ext-enable $(echo ${pkg} | tr '[A-Z]' '[a-z]') \
+        )
     done
 fi
 
@@ -140,11 +142,17 @@ fi
 # -----------------------------------------------
 if [ ${PHP_VERSION:0:1} = "7" ] && [ yes = "${INSTALL_MEMCACHED}" ]; then
     echo "----------- memcached install  ------------"
-    src="https://github.com/php-memcached-dev/php-memcached"
-    install_dir="/usr/local/lib/php/extensions/no-debug-non-zts-20151012/memcached.so"
-
-    git clone --branch php7 ${src} /usr/src/php/ext/memcached/
-    cd /usr/src/php/ext/memcached
-    phpize && ./configure && make -j"$(nproc)" && make install
-    echo "extension=${install_dir}" > /usr/local/etc/php/conf.d/memcached.ini
+    curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/php7.tar.gz"
+    mkdir -p memcached
+    tar -C memcached -zxvf /tmp/memcached.tar.gz --strip 1
+    (
+        cd memcached
+        phpize
+        ./configure
+        make -j"$(nproc)"
+        make install
+    )
+    rm -rf memcached
+    rm /tmp/memcached.tar.gz
+    docker-php-ext-enable memcached
 fi
