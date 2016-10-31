@@ -53,6 +53,10 @@ RUN a2enmod rewrite expires \
     && apt-get clean \
     && rm -rf /var/apt/lists/*
 
+ENV PATH=${PATH}:${HOME}/.composer/vendor/bin
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=${HOME} --filename=composer \
+    && mv ${HOME}/composer /usr/bin
+
 VOLUME /var/www/html
 
 COPY docker-entrypoint.sh /entrypoint-ex.sh
