@@ -51,6 +51,10 @@ RUN apt-get update && apt-get install -y yes \
     && apt-get clean \
     && rm -rf /var/apt/lists/*
 
+ENV PATH=${PATH}:${HOME}/.composer/vendor/bin
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=${HOME} --filename=composer \
+    && mv ${HOME}/composer /usr/bin
+
 EXPOSE 9000
 
 COPY docker-entrypoint.sh /entrypoint-ex.sh
