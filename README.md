@@ -42,7 +42,7 @@ for PHP-FPM 5.6:
 
 ``docker run -it -p 8080:80 -v "$(pwd)"/.data/conf:/usr/local/etc/php -d nutsllc/toybox-php``
 
-## Adding PHP extensions
+## Loading PHP extensions
 
 PHP extensions can be added by environment variables with ``enable`` value.
 
