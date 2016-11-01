@@ -4,6 +4,10 @@ set -e
 user="www-data"
 group="www-data"
 
+# -----------------------------------------------
+# GID & UID
+# -----------------------------------------------
+
 if [ -n "${TOYBOX_GID}" ] && ! cat /etc/group | awk 'BEGIN{ FS= ":" }{ print $3 }' | grep ${TOYBOX_GID} > /dev/null 2>&1; then
     groupmod -g ${TOYBOX_GID} ${group}
     echo "GID of ${group} has been changed."
@@ -14,13 +18,16 @@ if [ -n "${TOYBOX_UID}" ] && ! cat /etc/passwd | awk 'BEGIN{ FS= ":" }{ print $3
     echo "UID of ${user} has been changed."
 fi
 
-docroot="/var/www/html"
-mkdir -p ${docroot}
-[ $(ls ${docroot} | wc -l) -eq 0 ] && {
-    #tar xzf /usr/src/apache2-default-doc.tar.gz -C ${docroot}
-    echo '<?php phpinfo(); ?>' > ${docroot}/index.php
+# -----------------------------------------------
+# conf files & HTML contents
+# -----------------------------------------------
+
+php_confdir="/usr/local/etc/php"
+mkdir -p ${php_confdir}
+[ $(ls ${php_confdir} | wc -l) -eq 0 ] && {
+    tar xzf /usr/src/php-conf.tar.gz -C ${php_confdir}
 }
-chown -R ${user}:${group} ${docroot}
+chown -R ${user}:${group} ${php_confdir}
 
 apache2_confdir="/etc/apache2"
 mkdir -p ${apache2_confdir}
@@ -29,12 +36,20 @@ mkdir -p ${apache2_confdir}
 }
 chown -R ${user}:${group} ${apache2_confdir}
 
-php_confdir="/usr/local/etc/php"
-mkdir -p ${php_confdir}
-[ $(ls ${php_confdir} | wc -l) -eq 0 ] && {
-    tar xzf /usr/src/php-conf.tar.gz -C ${php_confdir}
+: ${DOCUMENT_ROOT:=/var/www/html}
+
+site_confdir=${apache2_confdir}/sites-available
+sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/000-default.conf
+sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/default-ssl.conf
+
+[ ! -d ${DOCUMENT_ROOT} ] && {
+    mkdir -p ${DOCUMENT_ROOT}
 }
-chown -R ${user}:${group} ${php_confdir}
+
+[ $(ls ${DOCUMENT_ROOT} | wc -l) -eq 0 ] && {
+    echo '<?php phpinfo(); ?>' > ${DOCUMENT_ROOT}/index.php
+}
+chown -R ${user}:${group} ${DOCUMENT_ROOT}
 
 # -----------------------------------------------
 # php module
@@ -106,7 +121,7 @@ chown -R ${user}:${group} ${php_confdir}
 
 : ${DATE_TIMEZONE:=UTC}
 
-if [ ! -f /usr/local/etc/php/php.ini ]; then
+if [ ! -f ${php_confdir}/php.ini ]; then
     {
         echo "memory_limit = ${MEMORY_LIMIT}"
         echo "post_max_size = ${POST_MAX_SIZE}"
