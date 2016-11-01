@@ -59,7 +59,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=${HOME} --
 
 VOLUME /var/www/html
 
-COPY docker-entrypoint.sh /entrypoint-ex.sh
+COPY docker-entrypoint.sh /entrypoint-php.sh
 
-ENTRYPOINT ["/entrypoint-ex.sh"]
+ENTRYPOINT ["/entrypoint-php.sh"]
 CMD ["apache2-foreground"]
