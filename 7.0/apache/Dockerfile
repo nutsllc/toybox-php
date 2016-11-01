@@ -54,7 +54,8 @@ RUN a2enmod rewrite expires \
     && rm -rf /var/apt/lists/*
 
 ENV PATH=${PATH}:${HOME}/.composer/vendor/bin
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=${HOME} --filename=composer \
+RUN echo "${PATH}" >> ${HOME}/.bash_profile \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=${HOME} --filename=composer \
     && mv ${HOME}/composer /usr/bin
 
 VOLUME /var/www/html
