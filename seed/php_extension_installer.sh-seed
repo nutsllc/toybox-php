@@ -90,7 +90,6 @@ pecl_exts=()
 [ yes = "${INSTALL_XDEBUG}" ] && {
     pecl_exts=("xdebug-${XDEBUG_VERSION}" "${pecl_exts[@]}")
     out=/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-    echo "zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20131226/xdebug.so" > ${out}
 }
 
 echo "PHP_VERSION: ${PHP_VERSION}"
@@ -135,6 +134,7 @@ fi
 [ "${#php_exts[@]}" -ne 0 ] && {
     echo "----------- docker-php-ext-install ------------"
     docker-php-ext-install ${php_exts[@]}
+    docker-php-ext-enable ${php_exts[@]}
 }
 
 # -----------------------------------------------
