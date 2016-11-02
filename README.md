@@ -1,4 +1,4 @@
-# PHP (5.6.x and 7.0.x) with Apache 2 on Docker
+# PHP (5.6 and 7.0) with Apache2 on Docker
 
 A Dockerfile for deploying a PHP using Docker container.
 
@@ -184,18 +184,24 @@ data:
 
 ```
 
-## Main file/directory path in this container
+## The main configuration file path in container
 
-### Apache
+### PHP (w/Apache2) image: ``nutsllc/toybox-php:x.x-apache``
 
-* Document root - ``/var/www/html``
-* Configuration files - ``/etc/apache2``
+||File or Directory Path|
+|:---|:---|
+|Document root|``/var/www/html``|
+|Apache2 Configuration files|``/etc/apache2``|
+|php.ini|``/usr/local/etc/php/php.ini``|
+|PHP modules conf files|``/usr/local/etc/php/conf.d/``|
 
-### PHP
+### PHP-FPM image: ``nutsllc/toybox-php:x.x-fpm``
 
-* php.ini - ``/usr/local/etc/php/php.ini``
-* Loaded modules conf files - ``/usr/local/etc/php/conf.d``
-
+||File or Directory Path|
+|:---|:---|
+|PHP-FPM configuration files|``/usr/local/etc/php-fpm.d/``|
+|php.ini|``/usr/local/etc/php/php.ini``|
+|PHP modules conf files|``/usr/local/etc/php/conf.d/``|
 
 ## Included modules
 
