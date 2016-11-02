@@ -39,10 +39,6 @@ Add ``-v`` option to docker run command to persistent the container data.
 
 ``-v "$(pwd)"/data/docroot:/var/www/html"``
 
-In case of applying ``-e PHP_FPM_HOST=xxx`` option, you must add ``-v`` option below insted of option above.
-
-``-v "$(pwd)"/data/docroot:/usr/share/nginx/html"``
-
 **Apache2 config files**
 
 ``-v "$(pwd)"/data/conf:/etc/apache2``
@@ -194,8 +190,6 @@ data:
 
 * Document root - ``/var/www/html``
 * Configuration files - ``/etc/apache2``
-
-If you apply ``-e PHP_FPM_HOST``, Document root will be set on ``/usr/share/nginx/html``
 
 ### PHP
 
