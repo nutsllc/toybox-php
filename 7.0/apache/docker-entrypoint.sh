@@ -29,31 +29,37 @@ mkdir -p ${php_confdir}
 }
 chown -R ${user}:${group} ${php_confdir}
 
+# -----------------------------------------------
+# for Apache2
+# -----------------------------------------------
+
 apache2_confdir="/etc/apache2"
-mkdir -p ${apache2_confdir}
-[ $(ls ${apache2_confdir} | wc -l) -eq 0 ] && {
-    tar xzf /usr/src/apache2-conf.tar.gz -C ${apache2_confdir}
+[ -d ${apache2_confdir} ] && {
+    [ $(ls ${apache2_confdir} | wc -l) -eq 0 ] && {
+        tar xzf /usr/src/apache2-conf.tar.gz -C ${apache2_confdir}
+    }
+    chown -R ${user}:${group} ${apache2_confdir}
+
+    : ${DOCUMENT_ROOT:=/var/www/html}
+    
+    site_confdir=${apache2_confdir}/sites-available
+    sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/000-default.conf
+    sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/default-ssl.conf
+    
+    [ ! -d ${DOCUMENT_ROOT} ] && {
+        mkdir -p ${DOCUMENT_ROOT}
+    }
+    
+    [ $(ls ${DOCUMENT_ROOT} | wc -l) -eq 0 ] && {
+        echo '<?php phpinfo(); ?>' > ${DOCUMENT_ROOT}/index.php
+    }
+    chown -R ${user}:${group} ${DOCUMENT_ROOT}
 }
-chown -R ${user}:${group} ${apache2_confdir}
-
-: ${DOCUMENT_ROOT:=/var/www/html}
-
-site_confdir=${apache2_confdir}/sites-available
-sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/000-default.conf
-sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/default-ssl.conf
-
-[ ! -d ${DOCUMENT_ROOT} ] && {
-    mkdir -p ${DOCUMENT_ROOT}
-}
-
-[ $(ls ${DOCUMENT_ROOT} | wc -l) -eq 0 ] && {
-    echo '<?php phpinfo(); ?>' > ${DOCUMENT_ROOT}/index.php
-}
-chown -R ${user}:${group} ${DOCUMENT_ROOT}
 
 # -----------------------------------------------
 # php module
 # -----------------------------------------------
+
 [ "enable" != "${ALL_PHP_MODULES}" ] && { 
     conf_dir=/usr/local/etc/php/conf.d
     modules=(
@@ -94,6 +100,7 @@ chown -R ${user}:${group} ${DOCUMENT_ROOT}
 # -----------------------------------------------
 # php.ini
 # -----------------------------------------------
+
 : ${MEMORY_LIMIT:=32M}
 : ${POST_MAX_SIZE:=16M}
 : ${UPLOAD_MAX_FILESIZE:=8M}
