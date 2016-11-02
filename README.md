@@ -24,27 +24,36 @@ for PHP-FPM 5.6:
 
 ``docker run --name fpm56 -idd nutsllc/toybox-php:5.6-fpm``
 
-### To correspond the main process user's gid/uid between inside and outside container
+## To correspond the main process user's gid/uid between inside and outside container
 
-* To find a specific user's UID and GID, in the shell prompt at the local machine, enter: ``id <username>``
+* To find a specific user's UID and GID in Local machine, in the shell prompt at the local machine, enter: ``id <username>``
 
 ``docker run -it -p 8080:80 -e TOYBOX_GID=<your gid> -e TOYBOX_UID=<your uid> -d nutsllc/toybox-php``
 
-### Persistent the Apache2 document root contents
+## Persistent the container data
 
-``docker run -it -p 8080:80 -v "$(pwd)"/.data/docroot:/usr/local/apache2/htdocs -d nutsllc/toybox-php``
+Add ``-v`` option to docker run command to persistent the container data.
 
-### Persistent the Apache2 config files
 
-``docker run -it -p 8080:80 -v "$(pwd)"/.data/conf:/etc/apache2 -d nutsllc/toybox-php``
+**Apache2 document root**
 
-### Persistent the PHP config files
+``-v "$(pwd)"/data/docroot:/var/www/html"``
 
-``docker run -it -p 8080:80 -v "$(pwd)"/.data/conf:/usr/local/etc/php -d nutsllc/toybox-php``
+In case of applying ``-e PHP_FPM_HOST=xxx`` option, you must add ``-v`` option below insted of option above.
+
+``-v "$(pwd)"/data/docroot:/usr/share/nginx/html"``
+
+**Apache2 config files**
+
+``-v "$(pwd)"/data/conf:/etc/apache2``
+
+**PHP config files**
+
+``-v "$(pwd)"/data/conf:/usr/local/etc/php``
 
 ## Loading PHP extensions
 
-PHP extensions can be added by environment variables with ``enable`` value.
+PHP extensions can be enabled by environment variables with ``enable`` value.
 
 For example:
 
@@ -107,28 +116,26 @@ Values list below are a default value.
 
 ## Docker Compose example
 
-### PHP
+### PHP (with Apache2)
 
 ```
 apache-php:
 	image: nutsllc/toybox-php:latest
 	volumes:
-		- "./data/htdocs:/usr/local/apache2/htdocs"
-		- "./data/conf:/etc/apache2"
+		- "./data/docroot:/var/www/html"
 	environment:
 		- ALL_PHP_MODULES=enable
 	ports:
 		- "8080:80"
 ```
 
-### PHP with Database(MySQL)
+### LAMP: PHP with Apache2 and database (MySQL)
 
 ```
 apache-php:
 	image: nutsllc/toybox-php:latest
 	volumes:
-		- "./data/docroot:/usr/local/apache2/htdocs"
-		- "./data/apache-conf:/etc/apache2"
+		- "./data/docroot:/var/www/html"
 	links:
 		- mysql
 	environment:
@@ -144,7 +151,7 @@ mysql:
     	- MYSQL_ROOT_PASSWORD=root
 ```
 
-### PHP-FPM with Nginx and Database
+### PHP-FPM with Nginx and database
 
 ```bash
 nginx:
@@ -177,7 +184,6 @@ data:
     image: busybox
     volumes:
         - "./data/docroot:/usr/share/nginx/html"
-        - "./data/nginx-conf:/etc/nginx"
         - "./data/mariadb-conf:/var/run/mysql"
 
 ```
@@ -188,6 +194,8 @@ data:
 
 * Document root - ``/var/www/html``
 * Configuration files - ``/etc/apache2``
+
+If you apply ``-e PHP_FPM_HOST``, Document root will be set on ``/usr/share/nginx/html``
 
 ### PHP
 
@@ -201,50 +209,50 @@ data:
 
 It shuld be apply an enviroment variable like ``-e apcu=enable`` to use optional modules. More detail, see ``Add PHP Modules`` section above.
 
-* apcu(Optional)
-* calendar
+* apcu (Optional)
+* calendar (Optional)
 * Core
 * ctype
 * curl
 * date
 * dom
 * ereg
-* exif(Optional)
+* exif (Optional)
 * fileinfo
 * filter
-* gd(Optional)
-* gettext(Optional)
+* gd (Optional)
+* gettext (Optional)
 * hash
 * iconv
-* intl(Optional)
+* intl (Optional)
 * json
 * libxml
 * mbstring
-* mcrypt(Optional)
-* memcached(Optional)
-* mysqli(Optional)
+* mcrypt (Optional)
+* memcached (Optional)
+* mysqli (Optional)
 * mysqlnd
-* opcache(Optional)
+* opcache (Optional)
 * openssl
 * pcre
 * PDO
-* pdo_mysql(Optional)
-* pdo_pgsql(Optional)
+* pdo_mysql (Optional)
+* pdo_pgsql (Optional)
 * pdo_sqlite
 * pgsql
-* Phar
+* phar
 * posix
 * readline
-* redis(Optional)
+* redis (Optional)
 * Reflection
 * session
 * SimpleXML
-* sockets(Optional)
+* sockets (Optional)
 * SPL
 * sqlite3
 * standard
 * tokenizer
-* xdebug(Optional)
+* xdebug (Optional)
 * xml
 * xmlreader
 * xmlwriter
@@ -253,8 +261,8 @@ It shuld be apply an enviroment variable like ``-e apcu=enable`` to use optional
 
 ### PHP Zend Modules
 
-* Xdebug(Option)
-* Zend OPcache(Optional)
+* Xdebug (Option)
+* Zend OPcache (Optional)
 
 ### Apache modules
 
@@ -290,4 +298,4 @@ It shuld be apply an enviroment variable like ``-e apcu=enable`` to use optional
 
 ## Contributing
 
-We'd love for you to contribute to this container. You can request new features by creating an [issue](https://github.com/nutsllc/toybox-apache2/issues), or submit a [pull request](https://github.com/nutsllc/toybox-apache2/pulls) with your contribution.
+We'd love for you to contribute to this container. You can request new features by creating an [issue](https://github.com/nutsllc/toybox-php/issues), or submit a [pull request](https://github.com/nutsllc/toybox-php/pulls) with your contribution.
