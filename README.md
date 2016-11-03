@@ -1,10 +1,19 @@
-# PHP (5.6 and 7.0) with Apache2 on Docker
+# PHP (5.6 and 7.0) on Docker
 
-A Dockerfile for deploying a PHP using Docker container.
+A Dockerfile for deploying a PHP running environment using Docker container.
 
 This image is extended [the official PHP image](https://hub.docker.com/_/php/) which is maintained in the [docker-library/php](https://github.com/docker-library/php/) GitHub repository and also registered to the [Docker Hub](https://hub.docker.com/r/nutsllc/toybox-php/) that is the official docker image registory.
 
-## Running container
+## Main Feautures
+
+With this container...
+
+* You can choose PHP running version and environment freely by Docker image tags.
+* By setting the GID and UID of the main process user in the container, it is possible to avoid the permission trouble.
+* You can enable extra PHP extension modules you need by environment variables.
+* You can change php.ini value by environment variables.
+
+## Running Container
 
 ### The simplest way to run container
 
