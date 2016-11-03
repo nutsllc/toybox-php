@@ -6,7 +6,7 @@ This image is extended [the official PHP image](https://hub.docker.com/_/php/) w
 
 ## Main Feautures
 
-With this container...
+With this Docker image...
 
 * You can choose PHP running version and environment freely by Docker image tags.
 * By setting the GID and UID of the main process user in the container, it is possible to avoid the permission trouble.
