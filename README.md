@@ -29,13 +29,9 @@ With this Docker image...
 
 ``docker run --name fpm70 -itd nutsllc/toybox-php:7.0-fpm``
 
-or ``docker run --name fpm70 -itd nutsllc/toybox-php:7.0-fpm-alpine``
-
 **for PHP-FPM 5.6:**
 
 ``docker run --name fpm56 -idd nutsllc/toybox-php:5.6-fpm``
-
-or ``docker run --name fpm70 -itd nutsllc/toybox-php:5.6-fpm-alpine``
 
 ## To correspond the main process user's gid/uid between inside and outside container
 
