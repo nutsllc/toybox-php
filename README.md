@@ -1,4 +1,4 @@
-# PHP (5.6 and 7.0) on Docker
+# PHP (5.6 and 7.0) on Docker (with Apache or PHP-FPM)
 
 A Dockerfile for deploying a PHP running environment using Docker container.
 
@@ -17,21 +17,25 @@ With this Docker image...
 
 ### The simplest way to run container
 
-for PHP 7.0 (with Apache2):
+**for PHP 7.0 (with Apache2):**
 
 ``docker run -p 8080:80 -itd nutsllc/toybox-php:7.0-apache``
 
-for PHP 5.6 (with Apache2):
+**for PHP 5.6 (with Apache2):**
 
 ``docker run -p 8080:80 -itd nutsllc/toybox-php:5.6-apache``
 
-for PHP-FPM 7.0:
+**for PHP-FPM 7.0:**
 
-``docker run --name fpm70 -itd nutsllc/toybox-php:7.0-fpm``  
+``docker run --name fpm70 -itd nutsllc/toybox-php:7.0-fpm``
 
-for PHP-FPM 5.6:
+or ``docker run --name fpm70 -itd nutsllc/toybox-php:7.0-fpm-alpine``
+
+**for PHP-FPM 5.6:**
 
 ``docker run --name fpm56 -idd nutsllc/toybox-php:5.6-fpm``
+
+or ``docker run --name fpm70 -itd nutsllc/toybox-php:5.6-fpm-alpine``
 
 ## To correspond the main process user's gid/uid between inside and outside container
 
