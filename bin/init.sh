@@ -1,7 +1,6 @@
 #!/bin/bash
 
 self=$(cd $(dirname $0);pwd)
-src=${self}/../seed
 dist=${self}/..
 
 dirs=(
@@ -10,8 +9,8 @@ dirs=(
     "${dist}/7.0/apache"
     "${dist}/7.0/fpm"
 )
-
 for d in ${dirs[@]}; do
+    src=${self}/../seed/ubuntu
     [ -d ${d} ] && rm -r ${d}
     php_ver=$(echo ${d} | awk -F "/" '{print $(NF - 1)}')
     if [ ${php_ver} = "5.6" ]; then
@@ -38,6 +37,38 @@ for d in ${dirs[@]}; do
     sed -i -e "s/{{REDIS_VERSION}}/${redis_ver}/" ${d}/Dockerfile
     echo "done."
 done
+
+# -------------------------------------------------------------------
+# for alpine
+# -------------------------------------------------------------------
+dirs=(
+    "${dist}/5.6-alpine/fpm"
+    "${dist}/7.0-alpine/fpm"
+)
+for d in ${dirs[@]}; do
+    src=${self}/../seed/alpine
+    [ -d ${d} ] && rm -r ${d}
+    php_ver=$(echo ${d} | awk -F "/" '{print $(NF - 1)}')
+    if [ ${php_ver} = "5.6-alpine" ]; then
+        php_ver=5.6.27
+    elif [ ${php_ver} = "7.0-alpine" ]; then
+        php_ver=7.0.8
+    fi
+    php_type=$(echo ${d} | awk -F "/" '{print $NF}')
+    printf "Generate: Dockerfile for PHP ${php_ver}-${php_type}-alpine ..."
+    mkdir -p ${d}
+    cp ${src}/${php_type}/Dockerfile-seed ${d}/Dockerfile
+    cp ${src}/docker-entrypoint.sh-seed ${d}/docker-entrypoint.sh
+    cp ${src}/php_extension_installer_alpine.sh-seed ${d}/php_extension_installer_alpine.sh
+    [ ${php_type} = "fpm" ] && {
+        cp -r ${src}/${php_type}/php-fpm.d ${d}/
+    }
+    chmod 755 ${d}/docker-entrypoint.sh
+    chmod 755 ${d}/php_extension_installer_alpine.sh
+    sed -i -e "s/{{ENV_PHP_VERSION}}/${php_ver}/" ${d}/Dockerfile
+    echo "done."
+done
+
 echo "complete!"
 
 exit 0
