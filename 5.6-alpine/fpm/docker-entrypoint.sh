@@ -9,18 +9,41 @@ group="www-data"
 # -----------------------------------------------
 
 if [ -n "${TOYBOX_GID}" ] && ! cat /etc/group | awk 'BEGIN{ FS= ":" }{ print $3 }' | grep ${TOYBOX_GID} > /dev/null 2>&1; then
-    groupmod -g ${TOYBOX_GID} ${group}
-    echo "GID of ${group} has been changed."
+    if [ type groupmod ]; then
+        groupmod -g ${TOYBOX_GID} ${group}
+        echo "GID of ${user} has been changed."
+    else
+        sed -i -e "s/^\(${user}:x:[0-9]*:\)[0-9]*\(:.*\)$/\1${TOYBOX_GID}\2/" /etc/passwd
+        sed -i -e "s/^\(${group}:x:\)[0-9]*\(:.*\)$/\1${TOYBOX_GID}\2/" /etc/group
+        echo "GID of ${group} has been changed."
+    fi
 fi
 
 if [ -n "${TOYBOX_UID}" ] && ! cat /etc/passwd | awk 'BEGIN{ FS= ":" }{ print $3 }' | grep ${TOYBOX_UID} > /dev/null 2>&1; then
-    usermod -u ${TOYBOX_UID} ${user}
-    echo "UID of ${user} has been changed."
+    if [ type usermod ]; then
+        usermod -u ${TOYBOX_UID} ${user}
+        echo "GID of ${group} has been changed."
+    else
+        sed -e "s/^\(${user}:x:\)[0-9]*\(:[0-9]*:.*\)$/\1${TOYBOX_UID}\2/" /etc/passwd
+        echo "UID of ${user} has been changed."
+    fi
 fi
 
 # -----------------------------------------------
 # conf files & HTML contents
 # -----------------------------------------------
+
+[ -d /php-fpm-conf ] && {
+    if [ ${PHP_VERSION:0:1} = "5" ]; then
+        php_fpm_conf_dir=/etc/php5
+    elif [ ${PHP_VERSION:0:1} = "7" ]; then
+        php_fpm_conf_dir=/etc/php7
+    fi
+    mkdir -p ${php_fpm_conf_dir}/fpm.d
+    mv /php-fpm-conf/php-fpm.conf ${php_fpm_conf_dir}
+    mv /php-fpm-conf/fpm.d/* ${php_fpm_conf_dir}/fpm.d
+    rm -rf /php-fpm-conf
+}
 
 #php_confdir="/usr/local/etc/php"
 #mkdir -p ${php_confdir}

@@ -19,7 +19,7 @@ ARG ARG_MEMCACHED=yes
 ARG ARG_REDIS=yes
 ARG ARG_XDEBUG=yes
 
-ENV PHP_VERSION=5.6.27 \
+ENV PHP_VERSION=5 \
     INSTALL_CALENDAR=${ARG_CALENDAR} \
     INSTALL_EXIF=${ARG_EXIF} \
     INSTALL_GD=${ARG_GD} \
@@ -37,9 +37,18 @@ ENV PHP_VERSION=5.6.27 \
     INSTALL_MEMCACHED=${ARG_MEMCACHED} \
     INSTALL_REDIS=${ARG_REDIS} \
     INSTALL_XDEBUG=${ARG_XDEBUG} \
-    PATH=${PATH}:${HOME}/.composer/vendor/bin
+    PATH=${PATH}:${HOME}/.composer/vendor/bin \
+    UID=1000 \
+    GID=1000 \
+    USER_NAME=www-data \
+    GROUP_NAME=www-data
 
 COPY php_extension_installer_alpine.sh /php_extension_installer.sh
+RUN addgroup -g ${GID} ${GROUP_NAME}\
+    && adduser -u ${UID} -D -G ${GROUP_NAME} ${USER_NAME}
+
+RUN addgroup -g 1001 toybox\
+    && adduser -u 1001 -D -G toybox toybox
 
 RUN [ ${PHP_VERSION:0:1} = 7 ] && { \
         echo "http://dl-3.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories; \
@@ -75,7 +84,7 @@ RUN [ ${PHP_VERSION:0:1} = 7 ] && { \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=${HOME} --filename=composer \
     && mv ${HOME}/composer /usr/bin
 
-COPY php-fpm.d/ /usr/local/etc/php-fpm.d/
+COPY php-fpm-conf/ /php-fpm-conf
 EXPOSE 9000
 
 COPY docker-entrypoint.sh /entrypoint-ex.sh
