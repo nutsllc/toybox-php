@@ -24,7 +24,7 @@ if [ -n "${TOYBOX_UID}" ] && ! cat /etc/passwd | awk 'BEGIN{ FS= ":" }{ print $3
         usermod -u ${TOYBOX_UID} ${user}
         echo "GID of ${group} has been changed."
     else
-        sed -e "s/^\(${user}:x:\)[0-9]*\(:[0-9]*:.*\)$/\1${TOYBOX_UID}\2/" /etc/passwd
+        sed -i -e "s/^\(${user}:x:\)[0-9]*\(:[0-9]*:.*\)$/\1${TOYBOX_UID}\2/" /etc/passwd
         echo "UID of ${user} has been changed."
     fi
 fi
