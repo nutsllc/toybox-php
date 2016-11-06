@@ -40,21 +40,20 @@ ENV PHP_VERSION=7.0.8 \
     INSTALL_APCU=${ARG_APCU} \
     INSTALL_MEMCACHED=${ARG_MEMCACHED} \
     INSTALL_REDIS=${ARG_REDIS} \
-    INSTALL_XDEBUG=${ARG_XDEBUG}
+    INSTALL_XDEBUG=${ARG_XDEBUG} \
+    PATH=${PATH}:${HOME}/.composer/vendor/bin
 
 COPY php_extension_installer.sh /php_extension_installer.sh
 
 RUN a2enmod rewrite expires \
-    && apt-get update && apt-get install -y yes \
+    && apt-get update && apt-get install -y yes git \
     && tar czf /usr/src/apache2-default-doc.tar.gz -C /var/www/html ./ \
     && tar czf /usr/src/apache2-conf.tar.gz -C /etc/apache2 ./ \
     && tar czf /usr/src/php-conf.tar.gz -C /usr/local/etc/php ./ \
     && /php_extension_installer.sh \
     && apt-get clean \
-    && rm -rf /var/apt/lists/*
-
-ENV PATH=${PATH}:${HOME}/.composer/vendor/bin
-RUN echo "${PATH}" >> ${HOME}/.bash_profile \
+    && rm -rf /var/apt/lists/* \
+    && echo "${PATH}" >> ${HOME}/.bash_profile \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=${HOME} --filename=composer \
     && mv ${HOME}/composer /usr/bin
 
