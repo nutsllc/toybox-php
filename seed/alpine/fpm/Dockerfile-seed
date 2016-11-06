@@ -60,6 +60,7 @@ RUN [ ${PHP_VERSION:0:1} = 7 ] && { \
         bash \
         tar \
         curl \
+        git \
         php${PHP_VERSION:0:1}-fpm \
         php${PHP_VERSION:0:1}-ctype \
         php${PHP_VERSION:0:1}-curl \
