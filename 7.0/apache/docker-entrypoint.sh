@@ -59,42 +59,91 @@ apache2_confdir="/etc/apache2"
 # -----------------------------------------------
 # php module
 # -----------------------------------------------
+modules=(
+    calendar
+    exif
+    gd
+    gettext
+    intl
+    mcrypt
+    mysqli
+    opcache
+    pdo_mysql
+    pdo_pgsql
+    pgsql
+    sockets
+    zip
+    apcu
+    memcached
+    redis
+    xdebug
+)
 
-[ "enable" != "${ALL_PHP_MODULES}" ] && { 
-    conf_dir=/usr/local/etc/php/conf.d
-    modules=(
-        calendar
-        exif
-        gd
-        gettext
-        intl
-        mcrypt
-        mysqli
-        opcache
-        pdo_mysql
-        pdo_pgsql
-        pgsql
-        sockets
-        zip
-        apcu
-        memcached
-        redis
-        xdebug
-    )
+function disablePhpModule() {
+    [ $# -eq 0 ] && {
+        echo "bad argument@disablePhpModule()"
+        exit;
+    }
+
+    m=$1
+    M=$(echo ${m} | tr [a-z] [A-Z])
+
+    [ ${M} = OPCACHE ] && [ -f ${conf_dir}/${m}-recommended.ini ] && {
+        rm ${conf_dir}/${m}-recommended.ini
+    }
+    [ -f ${conf_dir}/docker-php-ext-${m}.ini ] && {
+        rm ${conf_dir}/docker-php-ext-${m}.ini
+        echo "${m} is disabled."
+    }
+}
+
+conf_dir=/usr/local/etc/php/conf.d
     
+[ "enable" != "${ALL_PHP_MODULES}" ] && { 
     for m in ${modules[@]}; do
         M=$(echo ${m} | tr [a-z] [A-Z])
-        r=$(echo ${m} | tr [a-z] [A-Z])
         [ "enable" != "$(eval echo \"\$${M}\")" ] && {
-            [ ${M} = OPCACHE ] && [ -f ${conf_dir}/${m}-recommended.ini ] && {
-                rm ${conf_dir}/${m}-recommended.ini
-            }
-            [ -f ${conf_dir}/docker-php-ext-${m}.ini ] && {
-                rm ${conf_dir}/docker-php-ext-${m}.ini
-                echo "${m} is disabled."
-            }
+            disablePhpModule ${m}
         }
     done
+}
+
+[ "enable" == "${ALL_PHP_MODULES}" ] && { 
+    for m in ${modules[@]}; do
+        M=$(echo ${m} | tr [a-z] [A-Z])
+        [ "disable" == "$(eval echo \"\$${M}\")" ] && {
+            disablePhpModule ${m}
+        }
+    done
+}
+
+#[ "enable" != "${ALL_PHP_MODULES}" ] && { 
+#    for m in ${modules[@]}; do
+#        M=$(echo ${m} | tr [a-z] [A-Z])
+#        r=$(echo ${m} | tr [a-z] [A-Z])
+#        [ "enable" != "$(eval echo \"\$${M}\")" ] && {
+#            [ ${M} = OPCACHE ] && [ -f ${conf_dir}/${m}-recommended.ini ] && {
+#                rm ${conf_dir}/${m}-recommended.ini
+#            }
+#            [ -f ${conf_dir}/docker-php-ext-${m}.ini ] && {
+#                rm ${conf_dir}/docker-php-ext-${m}.ini
+#                echo "${m} is disabled."
+#            }
+#        }
+#    done
+#}
+
+function disablePhpModule() {
+    m=$1
+    M=$(echo ${m} | tr [a-z] [A-Z])
+
+    [ ${M} = OPCACHE ] && [ -f ${conf_dir}/${m}-recommended.ini ] && {
+        rm ${conf_dir}/${m}-recommended.ini
+    }
+    [ -f ${conf_dir}/docker-php-ext-${m}.ini ] && {
+        rm ${conf_dir}/docker-php-ext-${m}.ini
+        echo "${m} is disabled."
+    }
 }
 
 # -----------------------------------------------
