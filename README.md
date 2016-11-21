@@ -83,7 +83,16 @@ For example:
 * ``-e REDIS=enable``
 * ``-e XDEBUG=enable``
 
-If you want to enable all of the modules, you could use ``-e ALL_PHP_MODULES=enable``, no more need other options.
+You would like to enable all of the modules, you could use ``-e ALL_PHP_MODULES=enable``, no more need other options.
+
+If you do so, you can disable each PHP modules you don't need.
+
+For example:
+
+``docker run -it -p 8080:80 -e ALL_PHP_MODULE=enable -e OPCACHE=disable -d nutsllc/toybox-php:7.0.8-apache``
+
+
+
 
 ## Change php.ini parameter values
 
