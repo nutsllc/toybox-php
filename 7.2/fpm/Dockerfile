@@ -1,4 +1,4 @@
-FROM php:{{FROM_PHP_VERSION}}-apache
+FROM php:7.2.13-fpm
 MAINTAINER NutsProject, LLC <dev@nutsllc.jp>
 
 ARG ARG_CALENDAR=yes
@@ -20,11 +20,11 @@ ARG ARG_MEMCACHED=yes
 ARG ARG_REDIS=yes
 ARG ARG_XDEBUG=yes
 
-ENV PHP_VERSION={{ENV_PHP_VERSION}} \
-    APCU_VERSION={{APCU_VERSION}} \
+ENV PHP_VERSION=7.2.13 \
+    APCU_VERSION=5.1.15 \
     MEMCACHED_VERSION=2.2.0 \
-    REDIS_VERSION={{REDIS_VERSION}} \
-    XDEBUG_VERSION={{XDEBUG_VERSION}} \
+    REDIS_VERSION=4.2.0 \
+    XDEBUG_VERSION=2.6.0 \
     INSTALL_CALENDAR=${ARG_CALENDAR} \
     INSTALL_EXIF=${ARG_EXIF} \
     INSTALL_GD=${ARG_GD} \
@@ -47,21 +47,19 @@ ENV PHP_VERSION={{ENV_PHP_VERSION}} \
 
 COPY php_extension_installer.sh /php_extension_installer.sh
 
-RUN a2enmod rewrite expires \
-    && apt-get update && apt-get install -y yes git \
+RUN apt-get update && apt-get install -y yes git \
     && tar czf /usr/src/apache2-default-doc.tar.gz -C /var/www/html ./ \
-    && tar czf /usr/src/apache2-conf.tar.gz -C /etc/apache2 ./ \
     && tar czf /usr/src/php-conf.tar.gz -C /usr/local/etc/php ./ \
     && /php_extension_installer.sh \
     && apt-get clean \
     && rm -rf /var/apt/lists/* \
-    && echo "${PATH}" >> ${HOME}/.bash_profile \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=${HOME} --filename=composer \
     && mv ${HOME}/composer /usr/bin
 
-VOLUME /var/www/html
+WORKDIR /
+EXPOSE 9000
 
-COPY docker-entrypoint.sh /entrypoint-php.sh
+COPY docker-entrypoint.sh /entrypoint-ex.sh
+ENTRYPOINT ["/entrypoint-ex.sh"]
 
-ENTRYPOINT ["/entrypoint-php.sh"]
-CMD ["apache2-foreground"]
+CMD ["php-fpm"]

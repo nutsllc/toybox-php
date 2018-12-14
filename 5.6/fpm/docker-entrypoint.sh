@@ -41,15 +41,15 @@ apache2_confdir="/etc/apache2"
     chown -R ${user}:${group} ${apache2_confdir}
 
     : ${DOCUMENT_ROOT:=/var/www/html}
-    
+
     site_confdir=${apache2_confdir}/sites-available
     sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/000-default.conf
     sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/default-ssl.conf
-    
+
     [ ! -d ${DOCUMENT_ROOT} ] && {
         mkdir -p ${DOCUMENT_ROOT}
     }
-    
+
     [ $(ls ${DOCUMENT_ROOT} | wc -l) -eq 0 ] && {
         echo '<?php phpinfo(); ?>' > ${DOCUMENT_ROOT}/index.php
     }
@@ -71,6 +71,7 @@ modules=(
     pdo_mysql
     pdo_pgsql
     pgsql
+    bcmath
     sockets
     zip
     apcu
@@ -98,8 +99,8 @@ function disablePhpModule() {
 }
 
 conf_dir=/usr/local/etc/php/conf.d
-    
-[ "enable" != "${ALL_PHP_MODULES}" ] && { 
+
+[ "enable" != "${ALL_PHP_MODULES}" ] && {
     for m in ${modules[@]}; do
         M=$(echo ${m} | tr [a-z] [A-Z])
         [ "enable" != "$(eval echo \"\$${M}\")" ] && {
@@ -108,7 +109,7 @@ conf_dir=/usr/local/etc/php/conf.d
     done
 }
 
-[ "enable" == "${ALL_PHP_MODULES}" ] && { 
+[ "enable" == "${ALL_PHP_MODULES}" ] && {
     for m in ${modules[@]}; do
         M=$(echo ${m} | tr [a-z] [A-Z])
         [ "disable" == "$(eval echo \"\$${M}\")" ] && {
@@ -117,7 +118,7 @@ conf_dir=/usr/local/etc/php/conf.d
     done
 }
 
-#[ "enable" != "${ALL_PHP_MODULES}" ] && { 
+#[ "enable" != "${ALL_PHP_MODULES}" ] && {
 #    for m in ${modules[@]}; do
 #        M=$(echo ${m} | tr [a-z] [A-Z])
 #        r=$(echo ${m} | tr [a-z] [A-Z])
