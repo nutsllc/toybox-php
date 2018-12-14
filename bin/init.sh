@@ -38,6 +38,7 @@ for d in ${dirs[@]}; do
         redis_ver=4.2.0
         xdebug_ver=2.6.0
     elif [ ${php_ver} = "7.3" ]; then
+    # does not implemented yet
         php_ver=7.3
         apcu_ver=5.1.15
         redis_ver=4.2.0
@@ -52,12 +53,15 @@ for d in ${dirs[@]}; do
     cp ${src}/php_extension_installer.sh-seed ${d}/php_extension_installer.sh
     chmod 755 ${d}/docker-entrypoint.sh
     chmod 755 ${d}/php_extension_installer.sh
-    sed -i -e "s/{{FROM_PHP_VERSION}}/${php_ver}/" ${d}/Dockerfile
-    sed -i -e "s/{{ENV_PHP_VERSION}}/${php_ver}/" ${d}/Dockerfile
-    sed -i -e "s/{{APCU_VERSION}}/${apcu_ver}/" ${d}/Dockerfile
-    sed -i -e "s/{{REDIS_VERSION}}/${redis_ver}/" ${d}/Dockerfile
-    sed -i -e "s/{{XDEBUG_VERSION}}/${xdebug_ver}/" ${d}/Dockerfile
+    sed -i -e "s/{{FROM_PHP_VERSION}}/${php_ver}/g" ${d}/Dockerfile
+    sed -i -e "s/{{ENV_PHP_VERSION}}/${php_ver}/g" ${d}/Dockerfile
+    sed -i -e "s/{{APCU_VERSION}}/${apcu_ver}/g" ${d}/Dockerfile
+    sed -i -e "s/{{REDIS_VERSION}}/${redis_ver}/g" ${d}/Dockerfile
+    sed -i -e "s/{{XDEBUG_VERSION}}/${xdebug_ver}/g" ${d}/Dockerfile
     echo "done."
+    [ -f ${d}/Dockerfile-e ] && {
+        rm ${d}/Dockerfile-e
+    }
 done
 
 # -------------------------------------------------------------------
@@ -86,12 +90,22 @@ for d in ${dirs[@]}; do
     cp ${src}/php_extension_installer_alpine.sh-seed ${d}/php_extension_installer_alpine.sh
     chmod 755 ${d}/docker-entrypoint.sh
     chmod 755 ${d}/php_extension_installer_alpine.sh
-    sed -i -e "s/{{ENV_PHP_VERSION}}/${php_ver}/" ${d}/Dockerfile
-    sed -i -e "s/{{PHP_VERSION}}/${php_ver}/" ${d}/Makefile
-    sed -i -e "s/{{PHP_VERSION}}/${php_ver}/" ${d}/php-fpm-conf/php-fpm.conf
+    sed -i'' -e "s/{{ENV_PHP_VERSION}}/${php_ver}/" ${d}/Dockerfile
+    sed -i'' -e "s/{{PHP_VERSION}}/${php_ver}/" ${d}/Makefile
+    sed -i'' -e "s/{{PHP_VERSION}}/${php_ver}/" ${d}/php-fpm-conf/php-fpm.conf
+
     [ ${php_ver} = 7 ] && {
         sed -i -e "s/^\(CMD \[\)\"php-fpm\"\(\]\)/\1\"php-fpm7\",\"-F\"\2/" ${d}/Dockerfile
     }
+
+    [ -f ${d}/Dockerfile-e ] && {
+        rm ${d}/Dockerfile-e
+    }
+
+    [ -f ${d}/Makefile-e ] && {
+        rm ${d}/Makefile-e
+    }
+
     echo "done."
 done
 

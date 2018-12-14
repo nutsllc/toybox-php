@@ -20,7 +20,7 @@ ARG ARG_MEMCACHED=yes
 ARG ARG_REDIS=yes
 ARG ARG_XDEBUG=yes
 
-ENV PHP_VERSION={{ENV_PHP_VERSION}} \
+ENV PHP_VERSION=7 \
     INSTALL_CALENDAR=${ARG_CALENDAR} \
     INSTALL_EXIF=${ARG_EXIF} \
     INSTALL_GD=${ARG_GD} \
@@ -93,4 +93,4 @@ EXPOSE 9000
 COPY docker-entrypoint.sh /entrypoint-ex.sh
 ENTRYPOINT ["/entrypoint-ex.sh"]
 
-CMD ["php-fpm"]
+CMD ["php-fpm7","-F"]

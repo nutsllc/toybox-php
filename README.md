@@ -1,4 +1,4 @@
-# PHP (5.6 and 7.0) on Docker (with Apache or PHP-FPM)
+# PHP 5.6, 7.0, 7.1 and 7.2 on Docker (with Apache or PHP-FPM)
 
 A Dockerfile for deploying a PHP running environment using Docker container.
 
@@ -12,6 +12,13 @@ With this Docker image...
 * By setting the GID and UID of the main process user in the container, it is possible to avoid the permission trouble.
 * You can enable extra PHP extension modules you need by environment variables.
 * You can change php.ini value by environment variables.
+
+## Actual version
+
+``5.6`` = ``PHP 5.6.23``  
+``7.0`` = ``PHP 7.0.8``  
+``7.1`` = ``PHP 7.1.25``  
+``7.2`` = ``PHP 7.2.13``
 
 ## Running Container
 

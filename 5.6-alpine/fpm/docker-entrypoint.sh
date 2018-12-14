@@ -9,25 +9,48 @@ group="www-data"
 # -----------------------------------------------
 
 if [ -n "${TOYBOX_GID}" ] && ! cat /etc/group | awk 'BEGIN{ FS= ":" }{ print $3 }' | grep ${TOYBOX_GID} > /dev/null 2>&1; then
-    groupmod -g ${TOYBOX_GID} ${group}
-    echo "GID of ${group} has been changed."
+    if [ type groupmod ]; then
+        groupmod -g ${TOYBOX_GID} ${group}
+        echo "GID of ${user} has been changed."
+    else
+        sed -i -e "s/^\(${user}:x:[0-9]*:\)[0-9]*\(:.*\)$/\1${TOYBOX_GID}\2/" /etc/passwd
+        sed -i -e "s/^\(${group}:x:\)[0-9]*\(:.*\)$/\1${TOYBOX_GID}\2/" /etc/group
+        echo "GID of ${group} has been changed."
+    fi
 fi
 
 if [ -n "${TOYBOX_UID}" ] && ! cat /etc/passwd | awk 'BEGIN{ FS= ":" }{ print $3 }' | grep ${TOYBOX_UID} > /dev/null 2>&1; then
-    usermod -u ${TOYBOX_UID} ${user}
-    echo "UID of ${user} has been changed."
+    if [ type usermod ]; then
+        usermod -u ${TOYBOX_UID} ${user}
+        echo "GID of ${group} has been changed."
+    else
+        sed -i -e "s/^\(${user}:x:\)[0-9]*\(:[0-9]*:.*\)$/\1${TOYBOX_UID}\2/" /etc/passwd
+        echo "UID of ${user} has been changed."
+    fi
 fi
 
 # -----------------------------------------------
 # conf files & HTML contents
 # -----------------------------------------------
 
-php_confdir="/usr/local/etc/php"
-mkdir -p ${php_confdir}
-[ $(ls ${php_confdir} | wc -l) -eq 0 ] && {
-    tar xzf /usr/src/php-conf.tar.gz -C ${php_confdir}
+[ -d /php-fpm-conf ] && {
+    if [ ${PHP_VERSION:0:1} = "5" ]; then
+        php_fpm_conf_dir=/etc/php5
+    elif [ ${PHP_VERSION:0:1} = "7" ]; then
+        php_fpm_conf_dir=/etc/php7
+    fi
+    mkdir -p ${php_fpm_conf_dir}/fpm.d
+    mv /php-fpm-conf/php-fpm.conf ${php_fpm_conf_dir}
+    mv /php-fpm-conf/fpm.d/* ${php_fpm_conf_dir}/fpm.d
+    rm -rf /php-fpm-conf
 }
-chown -R ${user}:${group} ${php_confdir}
+
+#php_confdir="/usr/local/etc/php"
+#mkdir -p ${php_confdir}
+#[ $(ls ${php_confdir} | wc -l) -eq 0 ] && {
+#    tar xzf /usr/src/php-conf.tar.gz -C ${php_confdir}
+#}
+#chown -R ${user}:${group} ${php_confdir}
 
 # -----------------------------------------------
 # for Apache2
@@ -41,15 +64,15 @@ apache2_confdir="/etc/apache2"
     chown -R ${user}:${group} ${apache2_confdir}
 
     : ${DOCUMENT_ROOT:=/var/www/html}
-
+    
     site_confdir=${apache2_confdir}/sites-available
     sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/000-default.conf
     sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/default-ssl.conf
-
+    
     [ ! -d ${DOCUMENT_ROOT} ] && {
         mkdir -p ${DOCUMENT_ROOT}
     }
-
+    
     [ $(ls ${DOCUMENT_ROOT} | wc -l) -eq 0 ] && {
         echo '<?php phpinfo(); ?>' > ${DOCUMENT_ROOT}/index.php
     }
@@ -59,92 +82,53 @@ apache2_confdir="/etc/apache2"
 # -----------------------------------------------
 # php module
 # -----------------------------------------------
-modules=(
-    calendar
-    exif
-    gd
-    gettext
-    intl
-    mcrypt
-    mysqli
-    opcache
-    pdo_mysql
-    pdo_pgsql
-    pgsql
-    bcmath
-    sockets
-    zip
-    apcu
-    memcached
-    redis
-    xdebug
-)
 
-function disablePhpModule() {
-    [ $# -eq 0 ] && {
-        echo "bad argument@disablePhpModule()"
-        exit;
-    }
-
-    m=$1
-    M=$(echo ${m} | tr [a-z] [A-Z])
-
-    [ ${M} = OPCACHE ] && [ -f ${conf_dir}/${m}-recommended.ini ] && {
-        rm ${conf_dir}/${m}-recommended.ini
-    }
-    [ -f ${conf_dir}/docker-php-ext-${m}.ini ] && {
-        rm ${conf_dir}/docker-php-ext-${m}.ini
-        echo "${m} is disabled."
-    }
-}
-
-conf_dir=/usr/local/etc/php/conf.d
-
-[ "enable" != "${ALL_PHP_MODULES}" ] && {
+[ "enable" != "${ALL_PHP_MODULES}" ] && { 
+    modules=(
+        calendar
+        exif
+        gd
+        gettext
+        intl
+        mcrypt
+        mysqli
+        opcache
+        pdo_mysql
+        pdo_pgsql
+        pgsql
+        sockets
+        zip
+        apcu
+        memcached
+        redis
+        xdebug
+    )
+    
+    conf_dir=/etc/php${PHP_VERSION:0:1}/conf.d
+    php_ver=${PHP_VERSION:0:1}
     for m in ${modules[@]}; do
         M=$(echo ${m} | tr [a-z] [A-Z])
         [ "enable" != "$(eval echo \"\$${M}\")" ] && {
-            disablePhpModule ${m}
+            [ ${M} = OPCACHE ] && [ -f ${conf_dir}/${m}-recommended.ini ] && {
+                rm ${conf_dir}/${m}-recommended.ini
+            }
+            if [ ${php_ver} = 5 ]; then
+                [ -f ${conf_dir}/${m}.ini ] && {
+                    rm ${conf_dir}/${m}.ini
+                    echo "${m} is disabled."
+                }
+            elif [ ${php_ver} = 7 ]; then
+                [ -f ${conf_dir}/*_${m}.ini ] && {
+                    rm ${conf_dir}/*_${m}.ini
+                    echo "${m} is disabled."
+                }
+                [ -f ${conf_dir}/${m}.ini ] && {
+                    rm ${conf_dir}/${m}.ini
+                    echo "${m} is disabled."
+                }
+            fi
         }
     done
-}
-
-[ "enable" == "${ALL_PHP_MODULES}" ] && {
-    for m in ${modules[@]}; do
-        M=$(echo ${m} | tr [a-z] [A-Z])
-        [ "disable" == "$(eval echo \"\$${M}\")" ] && {
-            disablePhpModule ${m}
-        }
-    done
-}
-
-#[ "enable" != "${ALL_PHP_MODULES}" ] && {
-#    for m in ${modules[@]}; do
-#        M=$(echo ${m} | tr [a-z] [A-Z])
-#        r=$(echo ${m} | tr [a-z] [A-Z])
-#        [ "enable" != "$(eval echo \"\$${M}\")" ] && {
-#            [ ${M} = OPCACHE ] && [ -f ${conf_dir}/${m}-recommended.ini ] && {
-#                rm ${conf_dir}/${m}-recommended.ini
-#            }
-#            [ -f ${conf_dir}/docker-php-ext-${m}.ini ] && {
-#                rm ${conf_dir}/docker-php-ext-${m}.ini
-#                echo "${m} is disabled."
-#            }
-#        }
-#    done
-#}
-
-function disablePhpModule() {
-    m=$1
-    M=$(echo ${m} | tr [a-z] [A-Z])
-
-    [ ${M} = OPCACHE ] && [ -f ${conf_dir}/${m}-recommended.ini ] && {
-        rm ${conf_dir}/${m}-recommended.ini
-    }
-    [ -f ${conf_dir}/docker-php-ext-${m}.ini ] && {
-        rm ${conf_dir}/docker-php-ext-${m}.ini
-        echo "${m} is disabled."
-    }
 }
 
 # -----------------------------------------------
@@ -207,7 +191,7 @@ if [ ! -f ${php_confdir}/php.ini ]; then
         echo ""
         echo "[Date]"
         echo "date.timezone = ${DATE_TIMEZONE}"
-    } > /usr/local/etc/php/php.ini
+    } > /etc/php${PHP_VERSION:0:1}/php.ini
 fi
 
 [ -f /php_extension_installer.sh ] && {
