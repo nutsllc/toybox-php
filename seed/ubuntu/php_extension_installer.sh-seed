@@ -14,7 +14,12 @@ pecl_exts=()
 }
 
 [ yes = "${INSTALL_GD}" ] && {
-    php_libs=("libfreetype6-dev" "libpng12-dev" "libjpeg62-turbo-dev" "libgd-tools" "${php_libs[@]}")
+    if [ ${PHP_VERSION} = "5.6.23" -o ${PHP_VERSION} = "7.0.8" ]; then
+        php_libs=("libfreetype6-dev" "libpng12-dev" "libjpeg62-turbo-dev" "libgd-tools" "${php_libs[@]}")
+    elif [ ${PHP_VERSION} = "7.1.25" -o ${PHP_VERSION} = "7.2.13" -o ${PHP_VERSION} = "7.3" ]; then
+        php_libs=("libfreetype6-dev" "libpng-dev" "libjpeg62-turbo-dev" "libgd-tools" "${php_libs[@]}")
+    fi
+
     php_exts=("gd" "${php_exts[@]}")
 }
 
@@ -28,8 +33,14 @@ pecl_exts=()
 }
 
 [ yes = "${INSTALL_MCRYPT}" ] && {
-    php_libs=("libmcrypt-dev" "${php_libs[@]}")
-    php_exts=("mcrypt" "${php_exts[@]}")
+    if [ ${PHP_VERSION} = "5.6.23" -o ${PHP_VERSION} = "7.0.8" -o ${PHP_VERSION} = "7.1.25" ]; then
+        php_libs=("libmcrypt-dev" "${php_libs[@]}")
+        php_exts=("mcrypt" "${php_exts[@]}")
+    elif [ ${PHP_VERSION} = "7.2.13" ]; then
+        apt-get install -y libmcrypt-dev
+        pecl install mcrypt-1.0.1
+        docker-php-ext-enable mcrypt
+    fi
 }
 
 [ yes = "${INSTALL_MYSQLI}" ] && {
@@ -38,7 +49,7 @@ pecl_exts=()
 
 [ yes = "${INSTALL_OPCACHE}" ] && {
     php_exts=("opcache" "${php_exts[@]}")
-    { 
+    {
 		echo 'opcache.memory_consumption=128'
 		echo 'opcache.interned_strings_buffer=8'
 		echo 'opcache.max_accelerated_files=4000'
@@ -78,12 +89,17 @@ pecl_exts=()
 
 [ yes = "${INSTALL_MEMCACHED}" ] && {
     php_libs=("libmemcached-dev" "libz-dev" "${php_libs[@]}")
+
     if [ ${PHP_VERSION:0:1} = "5" ]; then
         pecl_exts=("memcached-${MEMCACHED_VERSION}" "${pecl_exts[@]}")
     fi
 }
 
 [ yes = "${INSTALL_REDIS}" ] && {
+    if [ ${PHP_VERSION} = "7.1.25" -o ${PHP_VERSION} = "7.2.13" -o ${PHP_VERSION} = "7.3" ]; then
+        pecl install igbinary
+        docker-php-ext-enable igbinary
+    fi
     pecl_exts=("redis-${REDIS_VERSION}" "${pecl_exts[@]}")
 }
 
@@ -92,10 +108,16 @@ pecl_exts=()
     out=/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 }
 
+echo ""
+echo "===================================================="
+echo ""
 echo "PHP_VERSION: ${PHP_VERSION}"
 printf "php_libs="; echo ${php_libs[@]}
 printf "php_exts="; echo ${php_exts[@]}
 printf "pecl_exts="; echo ${pecl_exts[@]}
+echo ""
+echo "===================================================="
+echo ""
 
 #docker-php-source extract
 # -----------------------------------------------
@@ -140,19 +162,19 @@ fi
 # -----------------------------------------------
 # memcached
 # -----------------------------------------------
-if [ ${PHP_VERSION:0:1} = "7" ] && [ yes = "${INSTALL_MEMCACHED}" ]; then
-    echo "----------- memcached install  ------------"
-    curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/php7.tar.gz"
-    mkdir -p memcached
-    tar -C memcached -zxvf /tmp/memcached.tar.gz --strip 1
-    (
-        cd memcached
-        phpize
-        ./configure
-        make -j"$(nproc)"
-        make install
-    )
-    rm -rf memcached
-    rm /tmp/memcached.tar.gz
-    docker-php-ext-enable memcached
-fi
+    if [ ${PHP_VERSION:0:1} = "7" ] && [ yes = "${INSTALL_MEMCACHED}" ]; then
+        echo "----------- memcached install  ------------"
+        curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/php7.tar.gz"
+        mkdir -p memcached
+        tar -C memcached -zxvf /tmp/memcached.tar.gz --strip 1
+        (
+            cd memcached
+            phpize
+            ./configure --enable-memcached-igbinary --enable-memcached-json
+            make -j"$(nproc)"
+            make install
+        )
+        rm -rf memcached
+        rm /tmp/memcached.tar.gz
+        docker-php-ext-enable memcached
+    fi
