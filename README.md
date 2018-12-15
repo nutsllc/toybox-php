@@ -84,6 +84,7 @@ For example:
 * ``-e OPCACHE=enable``
 * ``-e PDO_MYSQL=enable``
 * ``-e PDO_PGSQL=enable``
+* ``-e BCMATH=enable``
 * ``-e SOCKETS=enable``
 * ``-e ZIP=enable``
 * ``-e APCU=enable``
