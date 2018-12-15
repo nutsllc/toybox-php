@@ -14,10 +14,11 @@ pecl_exts=()
 }
 
 [ yes = "${INSTALL_GD}" ] && {
+    php_libs=("libfreetype6-dev" "libjpeg62-turbo-dev" "libgd-tools" "${php_libs[@]}")
     if [ ${PHP_VERSION} = "5.6.23" -o ${PHP_VERSION} = "7.0.8" ]; then
-        php_libs=("libfreetype6-dev" "libpng12-dev" "libjpeg62-turbo-dev" "libgd-tools" "${php_libs[@]}")
+        php_libs=("libpng12-dev" "${php_libs[@]}")
     elif [ ${PHP_VERSION} = "7.1.25" -o ${PHP_VERSION} = "7.2.13" -o ${PHP_VERSION} = "7.3" ]; then
-        php_libs=("libfreetype6-dev" "libpng-dev" "libjpeg62-turbo-dev" "libgd-tools" "${php_libs[@]}")
+        php_libs=("libpng-dev" "${php_libs[@]}")
     fi
 
     php_exts=("gd" "${php_exts[@]}")
