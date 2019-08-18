@@ -151,6 +151,9 @@ function disablePhpModule() {
 # php.ini
 # -----------------------------------------------
 
+: ${MAX_EXECUTION_TIME:=30}
+: ${MAX_INPUT_TIME:=-1}
+: ${MAX_INPUT_VARS:=1000}
 : ${MEMORY_LIMIT:=32M}
 : ${POST_MAX_SIZE:=16M}
 : ${UPLOAD_MAX_FILESIZE:=8M}
@@ -180,6 +183,9 @@ function disablePhpModule() {
 
 if [ ! -f ${php_confdir}/php.ini ]; then
     {
+        echo "max_execution_time = ${MAX_EXECUTION_TIME}"
+        echo "max_input_time = ${MAX_INPUT_TIME}"
+        echo "max_input_vars = ${MAX_INPUT_VARS}"
         echo "memory_limit = ${MEMORY_LIMIT}"
         echo "post_max_size = ${POST_MAX_SIZE}"
         echo "upload_max_filesize = ${UPLOAD_MAX_FILESIZE}"
