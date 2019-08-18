@@ -64,15 +64,15 @@ apache2_confdir="/etc/apache2"
     chown -R ${user}:${group} ${apache2_confdir}
 
     : ${DOCUMENT_ROOT:=/var/www/html}
-    
+
     site_confdir=${apache2_confdir}/sites-available
     sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/000-default.conf
     sed -i -e "s:^\(.*DocumentRoot \)/var/www/html$:\1${DOCUMENT_ROOT}:" ${site_confdir}/default-ssl.conf
-    
+
     [ ! -d ${DOCUMENT_ROOT} ] && {
         mkdir -p ${DOCUMENT_ROOT}
     }
-    
+
     [ $(ls ${DOCUMENT_ROOT} | wc -l) -eq 0 ] && {
         echo '<?php phpinfo(); ?>' > ${DOCUMENT_ROOT}/index.php
     }
@@ -83,7 +83,7 @@ apache2_confdir="/etc/apache2"
 # php module
 # -----------------------------------------------
 
-[ "enable" != "${ALL_PHP_MODULES}" ] && { 
+[ "enable" != "${ALL_PHP_MODULES}" ] && {
     modules=(
         calendar
         exif
@@ -103,7 +103,7 @@ apache2_confdir="/etc/apache2"
         redis
         xdebug
     )
-    
+
     conf_dir=/etc/php${PHP_VERSION:0:1}/conf.d
     php_ver=${PHP_VERSION:0:1}
     for m in ${modules[@]}; do
@@ -135,6 +135,9 @@ apache2_confdir="/etc/apache2"
 # php.ini
 # -----------------------------------------------
 
+: ${MAX_EXECUTION_TIME:=30}
+: ${MAX_INPUT_TIME:=-1}
+: ${MAX_INPUT_VARS:=1000}
 : ${MEMORY_LIMIT:=32M}
 : ${POST_MAX_SIZE:=16M}
 : ${UPLOAD_MAX_FILESIZE:=8M}
@@ -158,12 +161,13 @@ apache2_confdir="/etc/apache2"
 : ${SESSION_SAVE_PATH:='/var/lib/php/session'}
 
 : ${SHORT_OPEN_TAG:=On}
-: ${MAX_EXECUTION_TIME:=30}
-
 : ${DATE_TIMEZONE:=UTC}
 
 if [ ! -f ${php_confdir}/php.ini ]; then
     {
+        echo "max_execution_time = ${MAX_EXECUTION_TIME}"
+        echo "max_input_time = ${MAX_INPUT_TIME}"
+        echo "max_input_vars = ${MAX_INPUT_VARS}"
         echo "memory_limit = ${MEMORY_LIMIT}"
         echo "post_max_size = ${POST_MAX_SIZE}"
         echo "upload_max_filesize = ${UPLOAD_MAX_FILESIZE}"
