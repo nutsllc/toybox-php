@@ -15,10 +15,16 @@ With this Docker image...
 
 ## Actual version
 
-``5.6`` = ``PHP 5.6.23``  
-``7.0`` = ``PHP 7.0.8``  
-``7.1`` = ``PHP 7.1.25``  
+``5.6`` = ``PHP 5.6.23``
+``7.0`` = ``PHP 7.0.8``
+``7.1`` = ``PHP 7.1.25``
 ``7.2`` = ``PHP 7.2.13``
+
+## init
+
+```bash
+$ cd /path/to/toybox-php
+$ sh bin/init.sh
 
 ## Running Container
 
