@@ -1,37 +1,37 @@
 version: '2'
 services:
-    nginx:
+    toybox-php-nginx:
         image: nutsllc/toybox-nginx:1.15.7-alpine
         container_name: toybox-php-nginx
         environment:
-            - PHP_FPM_HOST=php-fpm:9000
+            - PHP_FPM_HOST=toybox-php-fpm:9000
         volumes:
             - "../data/html:/usr/share/nginx/html"
         links:
-            - php-fpm
-            - mariadb
+            - toybox-php-fpm
+            - toybox-php-mariadb
         ports:
             - 8080:80
         networks:
-            demo_network:
+            demo-network:
 
-    php-fpm:
+    toybox-php-fpm:
         image: nutsllc/toybox-php:7.2-fpm
         container_name: toybox-php-fpm
         volumes:
             - "../data/html:/usr/share/nginx/html"
         links:
-            - mariadb
+            - toybox-php-mariadb
         networks:
-            demo_network:
+            demo-network:
 
-    mariadb:
+    toybox-php-mariadb:
         image: nutsllc/toybox-mariadb
         container_name: toybox-php-mariadb
         environment:
             - MYSQL_ROOT_PASSWORD=root
         networks:
-            demo_network:
+            demo-network:
 
 networks:
-  demo_network:
+  demo-network:
