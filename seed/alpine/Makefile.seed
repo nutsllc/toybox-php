@@ -1,10 +1,10 @@
 all: php
 
-php:
+build:
 	docker build -t test/fpm-alpine:{{PHP_VERSION}} .
 
 run:
 	docker run -itd test/fpm-alpine:{{PHP_VERSION}}
 
 shell:
-	docker run -it test/fpm-alpine:{{PHP_VERSION}} /bin/bash
+	docker run -it test/fpm-alpine:{{PHP_VERSION}} /bin/sh

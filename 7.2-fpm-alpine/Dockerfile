@@ -1,4 +1,4 @@
-FROM alpine:3.4
+FROM alpine:3.9
 MAINTAINER NutsProject, LLC <dev@nutsllc.jp>
 
 ARG ARG_CALENDAR=yes
@@ -20,7 +20,7 @@ ARG ARG_MEMCACHED=yes
 ARG ARG_REDIS=yes
 ARG ARG_XDEBUG=yes
 
-ENV PHP_VERSION=7 \
+ENV PHP_VERSION=7.2 \
     INSTALL_CALENDAR=${ARG_CALENDAR} \
     INSTALL_EXIF=${ARG_EXIF} \
     INSTALL_GD=${ARG_GD} \
@@ -45,7 +45,7 @@ ENV PHP_VERSION=7 \
     USER_NAME=www-data \
     GROUP_NAME=www-data
 
-COPY php_extension_installer_alpine.sh /php_extension_installer.sh
+COPY php_extension_installer.sh /php_extension_installer.sh
 RUN addgroup -g ${GID} ${GROUP_NAME}\
     && adduser -u ${UID} -D -G ${GROUP_NAME} ${USER_NAME}
 
@@ -53,10 +53,8 @@ RUN addgroup -g 1001 toybox\
     && adduser -u 1001 -D -G toybox toybox
 
 RUN [ ${PHP_VERSION:0:1} = 7 ] && { \
-        echo "http://dl-3.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories; \
-        echo "http://dl-3.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories; \
-        apk add --update --no-cache \
-            libressl; \
+    apk add --update --no-cache \
+        libressl; \
     }; \
     apk add --update --no-cache \
         bash \
@@ -83,9 +81,9 @@ RUN [ ${PHP_VERSION:0:1} = 7 ] && { \
             php7-readline; \
         mv /usr/bin/php7 /usr/bin/php; \
     }; \
-    /php_extension_installer.sh \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=${HOME} --filename=composer \
-    && mv ${HOME}/composer /usr/bin
+    echo "http://dl-3.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories; \
+    echo "http://dl-3.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories; \
+    /php_extension_installer.sh
 
 COPY php-fpm-conf/ /php-fpm-conf
 EXPOSE 9000

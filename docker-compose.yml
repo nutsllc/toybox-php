@@ -1,8 +1,0 @@
-apache-php:
-    image: nutsllc/toybox-php:7.0-apache
-    volumes:
-        - "./data/docroot:/var/www/html"
-    environment:
-        - ALL_PHP_MODULES=enable
-    ports:
-        - "8080:80"

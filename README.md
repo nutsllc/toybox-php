@@ -1,24 +1,15 @@
-# PHP 5.6, 7.0, 7.1 and 7.2 on Docker (with Apache or PHP-FPM)
+# Toybox PHP
 
-A Dockerfile for deploying a PHP running environment using Docker container.
+This is a Dockerfile for deploying a PHP running environment using Docker container.
 
-This image is extended [the official PHP image](https://hub.docker.com/_/php/) which is maintained in the [docker-library/php](https://github.com/docker-library/php/) GitHub repository and also registered to the [Docker Hub](https://hub.docker.com/r/nutsllc/toybox-php/) that is the official docker image registory.
-
-## Main Feautures
-
-With this Docker image...
-
-* You can choose PHP running version and environment freely by Docker image tags.
-* By setting the GID and UID of the main process user in the container, it is possible to avoid the permission trouble.
-* You can enable extra PHP extension modules you need by environment variables.
-* You can change php.ini value by environment variables.
 
 ## Actual version
 
 ``5.6`` = ``PHP 5.6.23``  
 ``7.0`` = ``PHP 7.0.8``  
 ``7.1`` = ``PHP 7.1.25``  
-``7.2`` = ``PHP 7.2.13``
+``7.2`` = ``PHP 7.2.13``  
+``7.3`` = ``PHP 7.3.29``
 
 ## Running Container
 
