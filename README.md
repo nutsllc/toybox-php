@@ -1,58 +1,34 @@
 # Toybox PHP
 
-This is a Dockerfile for deploying a PHP running environment using Docker container.
+This is a collection of the Dockerfile for PHP. 
 
+## Getting started
 
-## Actual version
+### Strp1: Clone repository
+```bash
+$ git clone https://github.com/nutsllc/toybox-php
+```
 
-``5.6`` = ``PHP 5.6.23``  
-``7.0`` = ``PHP 7.0.8``  
-``7.1`` = ``PHP 7.1.25``  
-``7.2`` = ``PHP 7.2.13``  
-``7.3`` = ``PHP 7.3.29``
+### Step2: Running Container
+- When you run some version of the container, you should change directory specified each version of the container you want run it.
+- Then only you have to do is running ``docker-compose up -d`` command.
 
-## Running Container
+```bash
+$ cd 7.3-fpm-alpine/docker-compose/
+$ docker-compose up d
+```
 
-### The simplest way to run container
+Enjoy :-)
 
-**for PHP 7.0 (with Apache2):**
+## Edit Dockerfile or docker-compose.yml
 
-``docker run -p 8080:80 -itd nutsllc/toybox-php:7.0-apache``
+- Seed files are in ``seed/`` directory. So you can edit them.
+- After you edit some seed files, you are going to generate Dockerfile, docker-compose.yml and so on by running command bellow.
 
-**for PHP 5.6 (with Apache2):**
-
-``docker run -p 8080:80 -itd nutsllc/toybox-php:5.6-apache``
-
-**for PHP-FPM 7.0:**
-
-``docker run --name fpm70 -itd nutsllc/toybox-php:7.0-fpm``
-
-**for PHP-FPM 5.6:**
-
-``docker run --name fpm56 -idd nutsllc/toybox-php:5.6-fpm``
-
-## To correspond the main process user's gid/uid between inside and outside container
-
-* To find a specific user's UID and GID in Local machine, in the shell prompt at the local machine, enter: ``id <username>``
-
-``docker run -it -p 8080:80 -e TOYBOX_GID=<your gid> -e TOYBOX_UID=<your uid> -d nutsllc/toybox-php``
-
-## Persistent the container data
-
-Add ``-v`` option to docker run command to persistent the container data.
-
-
-**Apache2 document root**
-
-``-v "$(pwd)"/data/docroot:/var/www/html"``
-
-**Apache2 config files**
-
-``-v "$(pwd)"/data/conf:/etc/apache2``
-
-**PHP config files**
-
-``-v "$(pwd)"/data/conf:/usr/local/etc/php``
+```bash
+$ cd path/to/clon/directory
+$ sh bin/init.sh
+```
 
 ## Loading PHP extensions
 
@@ -62,7 +38,7 @@ For example:
 
 ``docker run -it -p 8080:80 -e GD=enable -e MEMCACHED=enable -e APCU=enable -e OPCACHE=enable -e XDEBUG=true -d nutsllc/toybox-php:7.0.8-apache``
 
-### List of the PHP extensions that you can enable to container
+### List of the PHP extensions that can be enabled
 
 * ``-e CALENDAR=enable``
 * ``-e EXIF=enable``
@@ -89,8 +65,6 @@ If you do so, you can disable each PHP modules you don't need.
 For example:
 
 ``docker run -it -p 8080:80 -e ALL_PHP_MODULE=enable -e OPCACHE=disable -d nutsllc/toybox-php:7.0.8-apache``
-
-
 
 
 ## Change php.ini parameter values
@@ -127,9 +101,9 @@ Values list below are a default value.
 * ``-e MAX_EXECUTION_TIME="30"``
 * ``-e DATE_TIMEZONE="UTC"``
 
-## Docker Compose example
+## Docker Compose examples
 
-### PHP (with Apache2)
+### ex1. Apache2 + PHP:
 
 ```
 apache-php:
@@ -142,7 +116,7 @@ apache-php:
 		- "8080:80"
 ```
 
-### LAMP: PHP with Apache2 and database (MySQL)
+### ex2. Apache2 + PHP + MySQL:
 
 ```
 apache-php:
@@ -164,7 +138,7 @@ mysql:
     	- MYSQL_ROOT_PASSWORD=root
 ```
 
-### PHP-FPM with Nginx and database
+### ex3. Nginx + PHP-FPM + MySQL:
 
 ```bash
 nginx:
@@ -201,24 +175,25 @@ data:
 
 ```
 
-## The main configuration file path in container
+## The common configuration files path in container
 
-### PHP (w/Apache2) image: ``nutsllc/toybox-php:x.x-apache``
+### Apache2 based container:
 
 ||File or Directory Path|
 |:---|:---|
 |Document root|``/var/www/html``|
-|Apache2 Configuration files|``/etc/apache2``|
+|Apache2 conf files|``/etc/apache2``|
 |php.ini|``/usr/local/etc/php/php.ini``|
 |PHP modules conf files|``/usr/local/etc/php/conf.d/``|
 
-### PHP-FPM image: ``nutsllc/toybox-php:x.x-fpm``
+### PHP-FPM based container:
 
 ||File or Directory Path|
 |:---|:---|
-|PHP-FPM configuration files|``/usr/local/etc/php-fpm.d/``|
+|PHP-FPM conf files|``/usr/local/etc/php-fpm.d/``|
 |php.ini|``/usr/local/etc/php/php.ini``|
 |PHP modules conf files|``/usr/local/etc/php/conf.d/``|
+
 
 ## Included modules
 
