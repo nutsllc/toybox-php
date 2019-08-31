@@ -1,6 +1,6 @@
 # Toybox PHP
 
-This is a collection of the Dockerfile for PHP. 
+This is a collection of the Dockerfile for PHP.
 
 ## Getting started
 
@@ -36,7 +36,7 @@ PHP extensions can be enabled by environment variables with ``enable`` value.
 
 For example:
 
-``docker run -it -p 8080:80 -e GD=enable -e MEMCACHED=enable -e APCU=enable -e OPCACHE=enable -e XDEBUG=true -d nutsllc/toybox-php:7.0.8-apache``
+``docker run -it -p 8080:80 -e GD=enable -e MEMCACHED=enable -e APCU=enable -e OPCACHE=enable -e XDEBUG=true -d nutsllc/toybox-php:7.2-apache``
 
 ### List of the PHP extensions that can be enabled
 
@@ -64,7 +64,7 @@ If you do so, you can disable each PHP modules you don't need.
 
 For example:
 
-``docker run -it -p 8080:80 -e ALL_PHP_MODULE=enable -e OPCACHE=disable -d nutsllc/toybox-php:7.0.8-apache``
+``docker run -it -p 8080:80 -e ALL_PHP_MODULE=enable -e OPCACHE=disable -d nutsllc/toybox-php:7.2-apache``
 
 
 ## Change php.ini parameter values
@@ -144,17 +144,17 @@ mysql:
 nginx:
     image: nutsllc/toybox-nginx
     links:
-        - php70-fpm
+        - php-fpm
         - mariadb
     ports:
         - 8080:80
     environment:
-        - PHP_FPM_HOST=php70-fpm:9000
+        - PHP_FPM_HOST=php-fpm:9000
     volumes_from:
         - data
 
-php70-fpm:
-    image: nutsllc/toybox-php:7.0-fpm
+php-fpm:
+    image: nutsllc/toybox-php:7.2-fpm
     links:
         - mariadb
 	environment:
@@ -202,6 +202,7 @@ data:
 It shuld be apply an enviroment variable like ``-e apcu=enable`` to use optional modules. More detail, see ``Add PHP Modules`` section above.
 
 * apcu (Optional)
+* BCMath (Optional)
 * calendar (Optional)
 * Core
 * ctype
@@ -216,6 +217,7 @@ It shuld be apply an enviroment variable like ``-e apcu=enable`` to use optional
 * gettext (Optional)
 * hash
 * iconv
+* igbinary
 * intl (Optional)
 * json
 * libxml
