@@ -1,0 +1,31 @@
+test-nginx:
+    image: nutsllc/toybox-nginx:1.15.7-alpine
+    volumes:
+        #- /etc/localtime:/etc/localtime:ro
+        - ./data/docroot:/usr/share/nginx/html
+        - ./data/nginx_conf.d:/etc/nginx/conf.d
+    links:
+        - test-php-fpm
+    environment:
+        - TOYBOX_UID=1000
+        - TOYBOX_GID=1000
+        - PHP_FPM_HOST=test-php-fpm:9000
+    ports:
+        - 8080:80
+
+test-php-fpm:
+    #image: test/fpm-alpine:{{PHP_VERSION}}
+    build: ../
+    links:
+        - test-mariadb:mysql
+    volumes:
+        - ./data/docroot:/usr/share/nginx/html
+    environment:
+        - TOYBOX_UID=1000
+        - TOYBOX_GID=1000
+        - ALL_PHP_MODULES=enable
+
+test-mariadb:
+    image: nutsllc/toybox-mariadb:10.1.14
+    environment:
+        - MYSQL_ROOT_PASSWORD=root
