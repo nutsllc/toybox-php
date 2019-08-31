@@ -45,12 +45,12 @@ for d in ${dirs[@]}; do
         xdebug_ver=2.6.0
     fi
     php_type=$(echo ${d} | awk -F "/" '{print $NF}')
-    dockerfile=${src}/${php_type}/Dockerfile-seed
+    dockerfile=${src}/${php_type}/Dockerfile.seed
     printf "Generate: Dockerfile for PHP ${php_ver}-${php_type} ..."
     mkdir -p ${d}
     cp ${dockerfile} ${d}/Dockerfile
-    cp ${src}/docker-entrypoint.sh-seed ${d}/docker-entrypoint.sh
-    cp ${src}/php_extension_installer.sh-seed ${d}/php_extension_installer.sh
+    cp ${src}/docker-entrypoint.sh.seed ${d}/docker-entrypoint.sh
+    cp ${src}/php_extension_installer.sh.seed ${d}/php_extension_installer.sh
     chmod 755 ${d}/docker-entrypoint.sh
     chmod 755 ${d}/php_extension_installer.sh
     sed -i -e "s/{{FROM_PHP_VERSION}}/${php_ver}/g" ${d}/Dockerfile
@@ -83,11 +83,11 @@ for d in ${dirs[@]}; do
     php_type=$(echo ${d} | awk -F "/" '{print $NF}')
     printf "Generate: Dockerfile for PHP ${php_ver}-${php_type}-alpine ..."
     mkdir -p ${d}
-    cp ${src}/${php_type}/Dockerfile-seed ${d}/Dockerfile
+    cp ${src}/${php_type}/Dockerfile.seed ${d}/Dockerfile
     cp -r ${src}/${php_type}/php-fpm-conf ${d}
-    cp ${src}/${php_type}/Makefile-seed ${d}/Makefile
-    cp ${src}/docker-entrypoint.sh-seed ${d}/docker-entrypoint.sh
-    cp ${src}/php_extension_installer_alpine.sh-seed ${d}/php_extension_installer_alpine.sh
+    cp ${src}/${php_type}/Makefile.seed ${d}/Makefile
+    cp ${src}/docker-entrypoint.sh.seed ${d}/docker-entrypoint.sh
+    cp ${src}/php_extension_installer_alpine.sh.seed ${d}/php_extension_installer_alpine.sh
     chmod 755 ${d}/docker-entrypoint.sh
     chmod 755 ${d}/php_extension_installer_alpine.sh
     sed -i'' -e "s/{{ENV_PHP_VERSION}}/${php_ver}/" ${d}/Dockerfile
