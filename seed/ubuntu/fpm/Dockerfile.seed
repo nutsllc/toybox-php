@@ -52,9 +52,7 @@ RUN apt-get update && apt-get install -y yes git \
     && tar czf /usr/src/php-conf.tar.gz -C /usr/local/etc/php ./ \
     && /php_extension_installer.sh \
     && apt-get clean \
-    && rm -rf /var/apt/lists/* \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=${HOME} --filename=composer \
-    && mv ${HOME}/composer /usr/bin
+    && rm -rf /var/apt/lists/*
 
 WORKDIR /
 EXPOSE 9000

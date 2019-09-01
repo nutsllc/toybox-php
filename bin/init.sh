@@ -4,20 +4,26 @@ self=$(cd $(dirname $0);pwd)
 dist=${self}/..
 
 dirs=(
-    "${dist}/5.6/apache"
-    "${dist}/5.6/fpm"
-    "${dist}/7.0/apache"
-    "${dist}/7.0/fpm"
-    "${dist}/7.1/apache"
-    "${dist}/7.1/fpm"
-    "${dist}/7.2/apache"
-    "${dist}/7.2/fpm"
+    "${dist}/5.6"
+    #"${dist}/5.6-fpm"
+    "${dist}/7.0"
+    #"${dist}/7.0-fpm"
+    "${dist}/7.1"
+    #"${dist}/7.1-fpm"
+    "${dist}/7.2"
+    #"${dist}/7.2-fpm"
 )
 
 src=${self}/../seed/ubuntu
 for d in ${dirs[@]}; do
     [ -d ${d} ] && rm -r ${d}
-    php_ver=$(echo ${d} | awk -F "/" '{print $(NF - 1)}')
+    label=$(echo ${d} | awk -F "/" '{print $(NF - 0)}')
+    php_ver=${label:0:3}
+    if [ ${#label} -gt 3 ]; then
+        php_type=fpm
+    else
+        php_type=apache
+    fi
     if [ ${php_ver} = "5.6" ]; then
         php_ver=5.6.23
         apcu_ver=4.0.11
@@ -45,16 +51,19 @@ for d in ${dirs[@]}; do
         redis_ver=4.2.0
         xdebug_ver=2.6.0
     fi
-    php_type=$(echo ${d} | awk -F "/" '{print $NF}')
+
     dockerfile=${src}/${php_type}/Dockerfile.seed
-    printf "Generate: Dockerfile for PHP ${php_ver}-${php_type} ..."
+    printf "Generate: Dockerfile for PHP ${php_type} ..."
     mkdir -p ${d}
     cp ${dockerfile} ${d}/Dockerfile
+    cp -r ${src}/docker-compose ${d}/docker-compose
     cp ${src}/docker-entrypoint.sh.seed ${d}/docker-entrypoint.sh
     cp ${src}/php_extension_installer.sh.seed ${d}/php_extension_installer.sh
     chmod 755 ${d}/docker-entrypoint.sh
     chmod 755 ${d}/php_extension_installer.sh
-    sed -i -e "s/{{FROM_PHP_VERSION}}/${php_ver}/g" ${d}/Dockerfile
+    sed -i -e "s/{{LABEL}}/${label}/g" ${d}/Dockerfile
+    sed -i -e "s/{{LABEL}}/${label}/g" ${d}/docker-compose/docker-compose.yml
+    sed -i -e "s/{{FROM_PHP_VERSION}}/${php_ver:0:3}/g" ${d}/Dockerfile
     sed -i -e "s/{{ENV_PHP_VERSION}}/${php_ver}/g" ${d}/Dockerfile
     sed -i -e "s/{{APCU_VERSION}}/${apcu_ver}/g" ${d}/Dockerfile
     sed -i -e "s/{{REDIS_VERSION}}/${redis_ver}/g" ${d}/Dockerfile
