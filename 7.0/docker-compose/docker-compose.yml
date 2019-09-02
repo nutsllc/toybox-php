@@ -1,0 +1,17 @@
+sample-php-7.0:
+    build: ../
+    links:
+        - sample-mariadb:mysql
+    volumes:
+        - ./data/docroot:/var/www/html
+    environment:
+        - TOYBOX_UID=1000
+        - TOYBOX_GID=1000
+        - ALL_PHP_MODULES=enable
+    ports:
+        - 8080:80
+
+sample-mariadb:
+    image: nutsllc/toybox-mariadb:10.1.14
+    environment:
+        - MYSQL_ROOT_PASSWORD=root
