@@ -42,15 +42,12 @@ ENV PHP_VERSION=7.2 \
     PATH=${PATH}:${HOME}/.composer/vendor/bin \
     UID=1000 \
     GID=1000 \
-    USER_NAME=www-data \
-    GROUP_NAME=www-data
+    USER_NAME=toybox \
+    GROUP_NAME=toybox
 
 COPY php_extension_installer.sh /php_extension_installer.sh
 RUN addgroup -g ${GID} ${GROUP_NAME}\
     && adduser -u ${UID} -D -G ${GROUP_NAME} ${USER_NAME}
-
-RUN addgroup -g 1001 toybox\
-    && adduser -u 1001 -D -G toybox toybox
 
 RUN [ ${PHP_VERSION:0:1} = 7 ] && { \
     apk add --update --no-cache \

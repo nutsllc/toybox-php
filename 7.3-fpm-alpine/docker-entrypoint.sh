@@ -1,31 +1,28 @@
 #!/bin/bash
 set -e
 
-user="www-data"
-group="www-data"
-
 # -----------------------------------------------
 # GID & UID
 # -----------------------------------------------
 
 if [ -n "${TOYBOX_GID}" ] && ! cat /etc/group | awk 'BEGIN{ FS= ":" }{ print $3 }' | grep ${TOYBOX_GID} > /dev/null 2>&1; then
     if [ type groupmod ]; then
-        groupmod -g ${TOYBOX_GID} ${group}
-        echo "GID of ${user} has been changed."
+        groupmod -g ${TOYBOX_GID} ${GROUP_NAME}
+        echo "GID of ${USER_NAME} has been changed."
     else
-        sed -i -e "s/^\(${user}:x:[0-9]*:\)[0-9]*\(:.*\)$/\1${TOYBOX_GID}\2/" /etc/passwd
-        sed -i -e "s/^\(${group}:x:\)[0-9]*\(:.*\)$/\1${TOYBOX_GID}\2/" /etc/group
-        echo "GID of ${group} has been changed."
+        sed -i -e "s/^\(${USER_NAME}:x:[0-9]*:\)[0-9]*\(:.*\)$/\1${TOYBOX_GID}\2/" /etc/passwd
+        sed -i -e "s/^\(${GROUP_NAME}:x:\)[0-9]*\(:.*\)$/\1${TOYBOX_GID}\2/" /etc/group
+        echo "GID of ${GROUP_NAME} has been changed."
     fi
 fi
 
 if [ -n "${TOYBOX_UID}" ] && ! cat /etc/passwd | awk 'BEGIN{ FS= ":" }{ print $3 }' | grep ${TOYBOX_UID} > /dev/null 2>&1; then
     if [ type usermod ]; then
-        usermod -u ${TOYBOX_UID} ${user}
-        echo "GID of ${group} has been changed."
+        usermod -u ${TOYBOX_UID} ${USER_NAME}
+        echo "GID of ${GROUP_NAME} has been changed."
     else
-        sed -i -e "s/^\(${user}:x:\)[0-9]*\(:[0-9]*:.*\)$/\1${TOYBOX_UID}\2/" /etc/passwd
-        echo "UID of ${user} has been changed."
+        sed -i -e "s/^\(${USER_NAME}:x:\)[0-9]*\(:[0-9]*:.*\)$/\1${TOYBOX_UID}\2/" /etc/passwd
+        echo "UID of ${USER_NAME} has been changed."
     fi
 fi
 
@@ -50,7 +47,7 @@ fi
 #[ $(ls ${php_confdir} | wc -l) -eq 0 ] && {
 #    tar xzf /usr/src/php-conf.tar.gz -C ${php_confdir}
 #}
-#chown -R ${user}:${group} ${php_confdir}
+#chown -R ${USER_NAME}:${GROUP_NAME} ${php_confdir}
 
 # -----------------------------------------------
 # for Apache2
@@ -61,7 +58,7 @@ apache2_confdir="/etc/apache2"
     [ $(ls ${apache2_confdir} | wc -l) -eq 0 ] && {
         tar xzf /usr/src/apache2-conf.tar.gz -C ${apache2_confdir}
     }
-    chown -R ${user}:${group} ${apache2_confdir}
+    chown -R ${USER_NAME}:${GROUP_NAME} ${apache2_confdir}
 
     : ${DOCUMENT_ROOT:=/var/www/html}
 
@@ -76,7 +73,7 @@ apache2_confdir="/etc/apache2"
     [ $(ls ${DOCUMENT_ROOT} | wc -l) -eq 0 ] && {
         echo '<?php phpinfo(); ?>' > ${DOCUMENT_ROOT}/index.php
     }
-    chown -R ${user}:${group} ${DOCUMENT_ROOT}
+    chown -R ${USER_NAME}:${GROUP_NAME} ${DOCUMENT_ROOT}
 }
 
 # -----------------------------------------------
