@@ -2,8 +2,8 @@ test-nginx:
     image: nutsllc/toybox-nginx:1.15.7-alpine
     volumes:
         #- /etc/localtime:/etc/localtime:ro
-        - ./data/docroot:/usr/share/nginx/html
-        - ./data/nginx_conf.d:/etc/nginx/conf.d
+        - ./data/nginx/docroot:/usr/share/nginx/html
+        - ./data/nginx/nginx_conf.d:/etc/nginx/conf.d
     links:
         - test-php-fpm
     environment:
@@ -19,7 +19,7 @@ test-php-fpm:
     links:
         - test-mariadb:mysql
     volumes:
-        - ./data/docroot:/usr/share/nginx/html
+        - ./data/nginx/docroot:/usr/share/nginx/html
     environment:
         - TOYBOX_UID=1000
         - TOYBOX_GID=1000
@@ -29,3 +29,7 @@ test-mariadb:
     image: nutsllc/toybox-mariadb:10.1.14
     environment:
         - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=toybox_php_db
+        - MYSQL_USER=nobita
+        - MYSQL_PASSWORD=nobita
+        - TERM=xterm

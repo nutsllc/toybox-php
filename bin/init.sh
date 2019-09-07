@@ -114,6 +114,7 @@ function _generate_for_php_fpm_alpine() {
             php-fpm-conf
             docker-compose/docker-compose.yml.seed
             docker-compose/data.seed
+            .dockerignore.seed
         )
 
         for file in ${files[@]}; do
